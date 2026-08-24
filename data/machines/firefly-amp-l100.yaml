@@ -1,0 +1,81 @@
+id: firefly-amp-l100
+vendor: FireFly Automatix
+model: AMP-L100
+status: current
+autonomy_class: semi_autonomous
+economic_engine: session
+platform_origin: purpose_built
+cutting:
+  type: reel
+  units: 5
+  width_in: 100
+  hoc_min_in: 0.3
+  hoc_max_in: 1.0
+  clip_handling: mulch
+capability:
+  greens: not_capable
+  tees: vendor_claimed
+  approaches: vendor_claimed
+  fairways: capable
+  intermediate_rough: vendor_claimed
+  primary_rough: not_capable
+  driving_range: vendor_claimed
+  conditions: []
+navigation:
+  system: network_rtk
+  local_base_required: false
+  accuracy_cm: 1
+  obstacle_detection: lidar + camera + sensor fusion
+  pattern_rotation: null
+power:
+  source: battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: 6.0
+  fast_charge_available: true
+  fast_charge_hr: null
+  charge_method: manual_plug
+  fuel_gal_per_hr: null
+  annual_kwh: null
+capacity:
+  basis: ac_per_hr
+  value: 3.02
+  vendor_assumed_mow_freq: null
+  ground_speed_mph: 6.0
+  measured_machine_min_per_ac: 19.9
+labor:
+  supervision_day: unattended
+  supervision_night: los_supervised
+  night_capable: true
+  operators_required: 0
+  measured_labor_min_per_ac: 4.3
+mechanical:
+  hydraulics_present: false
+  machine_life_hr: 10000
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: null
+  weight_lb: null
+  max_slope_pct: null
+cost:
+  list_price_usd: 160000
+  currency_original: USD
+  lease_available: false
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+provenance:
+  confidence: measured
+  dispute: false
+  sources:
+  - url: https://fireflyautomatix.com/amp-mowers/
+    accessed: '2026-08-01'
+    covers: product identity, 5-gang reel, 100 in
+  - url: https://www.golfdom.com/three-high-tech-tools-that-could-be-game-changers-for-your-course/
+    accessed: '2026-08-01'
+    covers: 10,000 hr machine life; vendor per-acre cost figures
+  - url: internal:trials/ritz-carlton+the-springs+glenwild
+    accessed: '2026-08-01'
+    covers: 19.9 machine-min/ac, 4.3 labor-min/ac
+  notes: 19.9 machine-min/ac independently reproduced at all three trial courses. Battery kWh, runtime,
+    fast-charge pricing pending from vendor. Price and 6 hr charge stated by project lead.

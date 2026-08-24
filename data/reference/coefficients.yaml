@@ -1,0 +1,51 @@
+# Every coefficient the engine uses. Nothing is hardcoded in site code.
+# Bump `version` on any change and log it in CHANGELOG.md so published results stay reproducible.
+version: "0.1.0"
+updated: "2026-08-01"
+
+time_engine:
+  session_hours_default:      {value: 5.5,  unit: hr,             confidence: measured, source: "trials"}
+  shepherd_direct_min:        {value: 8,    unit: operator_min,   confidence: assumed,  source: "project lead"}
+  shepherd_switch_loss_min:   {value: 8,    unit: operator_min,   confidence: assumed,  source: "project lead: 4 before + 4 after"}
+  los_productivity_factor:    {value: 0.80, unit: fraction,       confidence: assumed,  source: "estimate; range 0.75-0.85",
+    note: "Course-specific. Equals the share of outstanding work that is hole-adjacent. SURVEY THIS."}
+  attendance_day_pathlinked:  {value: 0.00, unit: fraction,       confidence: measured, source: "trials"}
+  attendance_day_unlinked:    {value: 1.00, unit: fraction,       confidence: measured, source: "trials"}
+
+measured_rates:
+  amp_machine_min_per_ac:     {value: 19.9, unit: machine_min/ac, confidence: measured, source: "3 courses, independently reproduced"}
+  amp_labor_min_per_ac:       {value: 4.3,  unit: labor_min/ac,   confidence: measured, source: "trials; range 2.9-5.9"}
+  manual_machine_min_per_ac:  {value: 24.2, unit: machine_min/ac, confidence: measured, source: "mean of 3 manual models"}
+  manual_labor_min_per_ac:    {value: 32.6, unit: labor_min/ac,   confidence: measured, source: "trials; range 28.5-34.8"}
+  diesel_gal_per_hr:          {value: 1.30, unit: gal/hr,         confidence: measured, source: "Springs 1.29, Glenwild 1.35"}
+  diesel_gal_per_ac:          {value: 0.70, unit: gal/ac,         confidence: measured, source: "derived"}
+
+energy:
+  amp_kwh_per_ac:             {value: 2.7,  unit: kWh/ac,         confidence: assumed,  source: "reverse-engineered from 6 hr charge vs ~4 hr runtime",
+    note: "LOW CONFIDENCE. Pack kWh unknown for every platform."}
+  diesel_co2_kg_per_gal:      {value: 10.21, unit: kg/gal,        confidence: published, source: "EPA emission factor"}
+  grid_co2_kg_per_kwh:        {value: null, unit: kg/kWh,         confidence: published, source: "EPA eGRID by ZIP",
+    note: "MUST be location-specific. US avg ~0.39 delivered; CA ~0.23; UT ~0.64. Never use a national constant."}
+
+financial:
+  loaded_wage_default:        {value: 24.50, unit: USD/hr,        confidence: published, source: "BLS median grounds maintenance $18.50/hr May 2024 + 33% burden"}
+  wage_escalation:            {value: 0.035, unit: fraction/yr,   confidence: assumed,  source: "user-editable"}
+  fuel_escalation:            {value: 0.025, unit: fraction/yr,   confidence: assumed,  source: "user-editable"}
+  electricity_escalation:     {value: 0.040, unit: fraction/yr,   confidence: assumed,  source: "user-editable"}
+  discount_rate:              {value: 0.06,  unit: fraction,      confidence: assumed,  source: "user-editable"}
+  overtime_multiplier:        {value: 1.5,   unit: multiplier,    confidence: published, source: "FLSA"}
+  retained_unit_carrying_usd: {value: 1400,  unit: USD/yr,        confidence: assumed,  source: "insurance ~0.8% of value + minimum service"}
+  diesel_price_default:       {value: 4.50,  unit: USD/gal,       confidence: published, source: "EIA on-highway less road tax, Jul 2026"}
+  electricity_default:        {value: 0.135, unit: USD/kWh,       confidence: published, source: "EIA US commercial average Apr 2026"}
+
+fleet:
+  manual_mower_life_hr:       {value: 8000, unit: hr,             confidence: published, source: "industry standard"}
+  calendar_life_cap_yr:       {value: 10,   unit: yr,             confidence: published, source: "Golf Course Industry: ~10 yr fleet life"}
+  fleet_cut_one_unit_low:     {value: 0.50, unit: fraction,       confidence: assumed,  source: "project lead"}
+  fleet_cut_one_unit_high:    {value: 0.70, unit: fraction,       confidence: assumed,  source: "project lead"}
+  fleet_cut_two_units:        {value: 1.00, unit: fraction,       confidence: assumed,  source: "project lead"}
+  residual_pct_5yr:           {value: 0.00, unit: fraction,       confidence: assumed,  source: "no secondary market data — 0 is the conservative default"}
+
+benchmarks:
+  fairway_acres_18hole:       {value: 31.9, unit: ac,             confidence: published, source: "GCSAA"}
+  rough_acres_18hole:         {value: null, unit: ac,             confidence: assumed,  source: "PLACEHOLDER ~45 ac — replace with survey median"}

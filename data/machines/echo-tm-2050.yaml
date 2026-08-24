@@ -1,0 +1,84 @@
+id: echo-tm-2050
+vendor: ECHO Robotics
+model: TM-2050 GPS-RTK
+status: current
+autonomy_class: fully_autonomous
+economic_engine: duty_cycle
+platform_origin: scaled_robotic
+cutting:
+  type: rotary_floating_head
+  units: 5
+  width_in: 40.7
+  hoc_min_in: null
+  hoc_max_in: null
+  clip_handling: mulch
+capability:
+  greens: not_capable
+  tees: not_capable
+  approaches: not_capable
+  fairways: conditional
+  intermediate_rough: conditional
+  primary_rough: capable
+  driving_range: capable
+  conditions:
+  - cool_season_only_for_fairways
+navigation:
+  system: rtk_gnss
+  local_base_required: true
+  accuracy_cm: 2
+  obstacle_detection: sonar + GPS no-go zones
+  pattern_rotation: true
+power:
+  source: battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: null
+  fast_charge_available: false
+  fast_charge_hr: null
+  charge_method: auto_dock
+  fuel_gal_per_hr: null
+  annual_kwh: 540
+capacity:
+  basis: ac_managed_vendor
+  value: 12.0
+  vendor_assumed_mow_freq: null
+  ground_speed_mph: null
+  measured_machine_min_per_ac: null
+labor:
+  supervision_day: unattended
+  supervision_night: unattended
+  night_capable: true
+  operators_required: 0
+  measured_labor_min_per_ac: null
+mechanical:
+  hydraulics_present: false
+  machine_life_hr: null
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: 52
+  weight_lb: null
+  max_slope_pct: null
+cost:
+  list_price_usd: null
+  currency_original: USD
+  lease_available: null
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+provenance:
+  confidence: vendor
+  dispute: true
+  dispute_note: 'ECHO markets the TM-2050 for rough, semi-rough AND fairways. Project position: rotary
+    floating-head mulcher can hold fairway quality on COOL-SEASON turf only, not warm-season. Site renders
+    fairways as conditional with the cool_season_only flag and shows both positions. Resolution requires
+    a measured HOC-vs-quality trial.'
+  sources:
+  - url: https://www.echo-usa.com/applications/robotic-golf-course-mowers
+    accessed: '2026-08-01'
+    covers: golf application, 12 ac claim, rough/semi-rough/fairway claim, 540 kWh/yr
+  - url: https://www.echorobotics.com/en/tm-2050-professional-robotic-lawnmower.html
+    accessed: '2026-08-01'
+    covers: 75,000 m2 capacity, WISENAV, 2 cm accuracy
+  notes: 'CAPACITY UNRECONCILED. Published figures across sources: 12 ac (Echo golf page), 15 ac, 18 ac
+    (75,000 m2), 16 ac per 2.5 days. vendor_assumed_mow_freq is REQUIRED to normalize any ac_managed_vendor
+    figure and is not published. BLOCKING: request from vendor.'

@@ -1,0 +1,87 @@
+# Machine record template. Copy, rename <vendor>-<model>.yaml, fill in.
+# null = genuinely unknown. Do NOT guess. Add a note saying what is needed.
+
+id: vendor-model
+vendor: ""
+model: ""
+status: current                  # current | announced | discontinued | unreleased
+autonomy_class: ""               # manual | semi_autonomous | fully_autonomous
+economic_engine: ""              # session | duty_cycle
+platform_origin: ""              # purpose_built | scaled_robotic | conventional
+
+cutting:
+  type: ""                       # reel | rotary_deck | rotary_floating_head
+  units: null
+  width_in: null
+  hoc_min_in: null
+  hoc_max_in: null
+  clip_handling: ""              # mulch | discharge | collect
+
+capability:                      # capable | vendor_claimed | conditional | not_capable
+  greens: not_capable
+  tees: null
+  approaches: null
+  fairways: null
+  intermediate_rough: null
+  primary_rough: null
+  driving_range: null
+  conditions: []                 # e.g. ["cool_season_only"] - see docs/CAPABILITY_CONDITIONS.md
+
+navigation:
+  system: ""                     # rtk_gnss | network_rtk | perimeter_wire | manual
+  local_base_required: null
+  accuracy_cm: null
+  obstacle_detection: ""
+  pattern_rotation: null
+
+power:
+  source: ""                     # diesel | gasoline | battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: null
+  fast_charge_available: null
+  fast_charge_hr: null
+  charge_method: ""              # manual_plug | auto_dock
+  fuel_gal_per_hr: null
+  annual_kwh: null
+
+capacity:                        # RAW figures only. Normalization is COMPUTED, never stored.
+  basis: ""                      # ac_per_hr | ac_per_day | ac_per_week | ac_managed_vendor
+  value: null
+  vendor_assumed_mow_freq: null  # REQUIRED when basis = ac_managed_vendor, else unnormalizable
+  ground_speed_mph: null
+  measured_machine_min_per_ac: null
+
+labor:
+  supervision_day: ""            # unattended | los_supervised | continuous_operator
+  supervision_night: ""
+  night_capable: null
+  operators_required: null
+  measured_labor_min_per_ac: null
+
+mechanical:
+  hydraulics_present: null
+  machine_life_hr: null
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: null
+  weight_lb: null
+  max_slope_pct: null
+
+cost:
+  list_price_usd: null
+  currency_original: USD
+  lease_available: null
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+
+provenance:
+  confidence: ""                 # measured | published | vendor | assumed
+  sources:
+    - url: ""
+      accessed: ""
+      covers: ""
+  dispute: false
+  dispute_note: ""
+  notes: ""

@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadCoefficients } from '../lib/data.js';
+const coef = loadCoefficients();
+const groups = Object.entries(coef).filter(([, v]) => typeof v === 'object' && v !== null);
+---
+<Base title="Methodology — TurfBot" description="How the model works and where every number comes from.">
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Coefficient set v{coef.version} &middot; updated {coef.updated}</p>
+      <h1>Every number, and where it came from</h1>
+      <p>
+        Nothing is hardcoded in the site. Every coefficient lives in a data file with its unit,
+        confidence, and source. Change the file, the site rebuilds, the numbers update.
+      </p>
+    </div>
+  </div>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">Normalizing capacity</h2>
+      <p class="section-lede">
+        Manufacturers publish capacity on at least four incompatible bases. Everything reduces to
+        managed acres — the area one unit keeps mowed at your frequency.
+      </p>
+      <table class="spec">
+        <caption>The conversion</caption>
+        <tbody>
+          <tr><th>Weekly throughput</th><td>daily capacity &times; working days per week</td></tr>
+          <tr><th>Managed acres</th><td>weekly throughput &divide; mowings per week</td></tr>
+          <tr><th>Working days</th><td>7 for docked duty-cycle machines, 5 for session machines</td></tr>
+          <tr><th>Validation</th><td>16.5 ac/day &times; 7 &divide; 3.5 = 33.0 ac vs 32.7 ac measured</td></tr>
+        </tbody>
+      </table>
+
+      {groups.map(([name, entries]) => (
+        <table class="spec">
+          <caption>{name.replace(/_/g, ' ')}</caption>
+          <tbody>
+            {Object.entries(entries).map(([k, v]) => (
+              <tr>
+                <th>{k.replace(/_/g, ' ')}</th>
+                <td>
+                  {v?.value ?? '—'} {v?.unit ?? ''}
+                  {v?.confidence && <span class={'chip ' + v.confidence} style="margin-left:8px">{v.confidence}</span>}
+                  {v?.note && <><br /><span style="color:var(--amber-dim);font-family:var(--sans)">{v.note}</span></>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ))}
+    </div>
+  </section>
+</Base>

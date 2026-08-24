@@ -1,0 +1,150 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadMachines, managedAcres, isBlocked, dailyCapacityAc, CLASS_LABEL } from '../lib/data.js';
+
+const machines = loadMachines();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Precompute what the browser needs so the slider does no data loading.
+const rows = machines.map((m) => ({
+  id: m.id,
+  label: `${m.vendor} ${m.model}`,
+  cls: m.autonomy_class,
+  clsLabel: CLASS_LABEL[m.autonomy_class],
+  basis: m.capacity?.basis ?? '',
+  daily: dailyCapacityAc(m),
+  blocked: isBlocked(m),
+  workingDays: m.economic_engine === 'duty_cycle' ? 7 : 5,
+}));
+
+const blockedCount = rows.filter((r) => r.blocked).length;
+const measured = machines.filter((m) => m.provenance?.confidence === 'measured').length;
+const unknownFields = machines.filter((m) => m.power?.battery_kwh == null).length;
+---
+<Base title="TurfBot — autonomous mowing specifications and decision tool"
+      description="Independent specifications and economic comparison for robotic turf mowers.">
+
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Auburn University turfgrass program</p>
+      <h1>Every vendor measures capacity differently. So none of them compare.</h1>
+      <p>
+        One manufacturer publishes acres per hour. Another publishes acres in 48 hours. A third
+        says it &ldquo;maintains up to 12 acres&rdquo; without saying how often it mows them.
+        This site converts all of it to one number a superintendent can actually use.
+      </p>
+    </div>
+  </div>
+
+  <div class="widget">
+    <div class="wrap">
+      <h2>Managed acres — how much turf one unit can keep mowed</h2>
+      <p class="sub">
+        Move the slider to your mowing frequency. Mowing more often means one machine covers
+        less ground, so frequency is a divisor, not a footnote. Validated against a measured
+        course: 16.5 ac/day over 7 working days at 3.5 mows per week gives 33.0 managed acres,
+        against 32.7 acres of actual fairway.
+      </p>
+
+      <div class="freq-control">
+        <label for="freq">Mowings per week</label>
+        <input type="range" id="freq" min="1" max="7" step="0.5" value="3" />
+        <span class="freq-readout" id="freq-out">3.0&times;</span>
+      </div>
+
+      <div class="bars" id="bars"></div>
+    </div>
+  </div>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">What this site is</h2>
+      <p class="section-lede">
+        Two things at once: a specification database for anyone researching robotic turf
+        equipment, and a decision tool for anyone weighing a purchase. Every value carries its
+        source and how much we trust it.
+      </p>
+      <div class="grid">
+        <div class="card">
+          <div class="vendor">Right now</div>
+          <div class="model">{machines.length} machines</div>
+          <div class="meta">{measured} with rates measured in our own field trials; the rest from published or vendor sources.</div>
+        </div>
+        <div class="card full">
+          <div class="vendor">Unresolved</div>
+          <div class="model">{blockedCount} capacity claims</div>
+          <div class="meta">Published as &ldquo;acres maintained&rdquo; with no stated mowing frequency. We show these as unnormalizable rather than guessing.</div>
+        </div>
+        <div class="card manual">
+          <div class="vendor">Still missing</div>
+          <div class="model">{unknownFields} battery specs</div>
+          <div class="meta">Pack capacity is unpublished across the industry. It drives both energy cost and fleet sizing.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <div class="wrap">
+      <h2 class="section-title">Browse the machines</h2>
+      <p class="section-lede">Manual, semi-autonomous, and fully autonomous platforms side by side.</p>
+      <div class="grid">
+        {machines.map((m) => (
+          <a class={'card ' + (m.autonomy_class === 'fully_autonomous' ? 'full' : m.autonomy_class === 'manual' ? 'manual' : '')}
+             href={base + '/machines/' + m.id + '/'}>
+            <div class="vendor">{m.vendor}</div>
+            <div class="model">{m.model}</div>
+            <div class="meta">
+              {CLASS_LABEL[m.autonomy_class]} &middot; {m.cutting?.type?.replace(/_/g, ' ')}
+              {m.cutting?.width_in ? ` · ${m.cutting.width_in} in` : ''}
+              <br />
+              <span class={'chip ' + m.provenance.confidence}>{m.provenance.confidence}</span>
+              {m.provenance.dispute && <span class="chip vendor" style="margin-left:5px">disputed</span>}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script define:vars={{ rows }}>
+    const bars = document.getElementById('bars');
+    const freq = document.getElementById('freq');
+    const out = document.getElementById('freq-out');
+
+    function managed(r, f) {
+      if (r.blocked || r.daily == null) return null;
+      return (r.daily * r.workingDays) / f;
+    }
+    function clsName(c) {
+      return c === 'fully_autonomous' ? 'full' : c === 'manual' ? 'manual' : 'semi';
+    }
+
+    function render() {
+      const f = parseFloat(freq.value);
+      out.textContent = f.toFixed(1) + '\u00d7';
+      const vals = rows.map((r) => ({ r, v: managed(r, f) }));
+      const max = Math.max(...vals.map((x) => x.v || 0), 1);
+      vals.sort((a, b) => (b.v ?? -1) - (a.v ?? -1));
+
+      bars.innerHTML = vals.map(({ r, v }) => {
+        if (v == null) {
+          return `<div class="bar-row">
+            <div class="bar-name">${r.label}<em>${r.clsLabel}</em></div>
+            <div class="bar-blocked">cannot be normalized — vendor states no mowing frequency</div>
+            <div class="bar-val">—</div>
+          </div>`;
+        }
+        const pct = Math.max((v / max) * 100, 1.5);
+        return `<div class="bar-row">
+          <div class="bar-name">${r.label}<em>${r.clsLabel}</em></div>
+          <div class="bar-track"><div class="bar-fill ${clsName(r.cls)}" style="width:${pct}%"></div></div>
+          <div class="bar-val">${v.toFixed(1)} ac</div>
+        </div>`;
+      }).join('');
+    }
+
+    freq.addEventListener('input', render);
+    render();
+  </script>
+</Base>

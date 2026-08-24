@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <a class="mark" href={base + '/'}>Turf<span>Bot</span></a>
+      <nav>
+        <a href={base + '/machines/'}>Machines</a>
+        <a href={base + '/methodology/'}>Methodology</a>
+      </nav>
+    </div>
+  </header>
+
+  <slot />
+
+  <footer class="foot">
+    <div class="wrap">
+      <p>
+        Auburn University turfgrass program. Independent — no advertising, no sponsored
+        placement, no affiliate links. Vendor claims are labelled as claims.
+      </p>
+      <p>Data and documentation CC BY 4.0. Built from the project data files; every page regenerates when the data changes.</p>
+    </div>
+  </footer>
+</body>
+</html>

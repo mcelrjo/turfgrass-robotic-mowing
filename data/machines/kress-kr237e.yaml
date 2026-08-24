@@ -1,0 +1,79 @@
+id: kress-kr237e
+vendor: Kress
+model: KR237E Mission Mega RTKn
+status: current
+autonomy_class: fully_autonomous
+economic_engine: duty_cycle
+platform_origin: scaled_robotic
+cutting:
+  type: rotary_floating_head
+  units: 2
+  width_in: null
+  hoc_min_in: 0.39
+  hoc_max_in: 2.36
+  clip_handling: mulch
+capability:
+  greens: not_capable
+  tees: vendor_claimed
+  approaches: not_capable
+  fairways: vendor_claimed
+  intermediate_rough: vendor_claimed
+  primary_rough: vendor_claimed
+  driving_range: vendor_claimed
+  conditions: []
+navigation:
+  system: network_rtk
+  local_base_required: false
+  accuracy_cm: 2
+  obstacle_detection: Obstacle Avoidance System (OAS)
+  pattern_rotation: null
+power:
+  source: battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: null
+  fast_charge_available: null
+  fast_charge_hr: null
+  charge_method: auto_dock
+  fuel_gal_per_hr: null
+  annual_kwh: null
+capacity:
+  basis: ac_managed_vendor
+  value: 5.93
+  vendor_assumed_mow_freq: null
+  ground_speed_mph: null
+  measured_machine_min_per_ac: null
+labor:
+  supervision_day: unattended
+  supervision_night: unattended
+  night_capable: true
+  operators_required: 0
+  measured_labor_min_per_ac: null
+mechanical:
+  hydraulics_present: false
+  machine_life_hr: null
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: null
+  weight_lb: null
+  max_slope_pct: null
+cost:
+  list_price_usd: null
+  currency_original: GBP
+  lease_available: null
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+provenance:
+  confidence: vendor
+  dispute: false
+  sources:
+  - url: https://www.kress.com/en-gb/kress-rtk%E2%81%BF-28000-m%C2%B2-robotic-lawn-mower-with-oas-obstacle-avoidance-system-kr237e/
+    accessed: '2026-08-01'
+    covers: GBP 12,199 inc VAT UK list, 10 mm HOC, fairway positioning
+  - url: https://groundtech.co.uk/product/kress-kr237e-rtkn-24000-robotic-mower-with-oas/
+    accessed: '2026-08-01'
+    covers: 24,000 m2 recommended / 36,000 m2 max, 10-60 mm HOC, gliding disc
+  notes: UK list GBP 12,199 incl VAT - needs FX conversion plus US dealer margin before use. 24,000 m2
+    recommended (5.93 ac) vs 36,000 m2 maximum (8.9 ac) - the gap between recommended and max is exactly
+    the frequency assumption the model needs made explicit.

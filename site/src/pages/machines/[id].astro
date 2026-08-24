@@ -1,0 +1,182 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadMachines, loadConditions, managedAcres, isBlocked, SURFACES, CLASS_LABEL } from '../../lib/data.js';
+
+export function getStaticPaths() {
+  return loadMachines().map((m) => ({ params: { id: m.id }, props: { m } }));
+}
+
+const { m } = Astro.props;
+const conditions = loadConditions();
+const conf = m.provenance?.confidence ?? 'assumed';
+
+const freqs = [2, 3, 3.5, 5];
+const managed = freqs.map((f) => ({ f, v: managedAcres(m, f) }));
+const blocked = isBlocked(m);
+
+function fmt(v, unit) {
+  if (v === null || v === undefined || v === '') return null;
+  if (typeof v === 'boolean') return v ? 'Yes' : 'No';
+  return unit ? `${v} ${unit}` : String(v);
+}
+
+const specGroups = [
+  ['Cutting', [
+    ['Type', fmt(m.cutting?.type?.replace(/_/g, ' '))],
+    ['Cutting units', fmt(m.cutting?.units)],
+    ['Width', fmt(m.cutting?.width_in, 'in')],
+    ['Height of cut', m.cutting?.hoc_min_in != null ? `${m.cutting.hoc_min_in} – ${m.cutting.hoc_max_in ?? '?'} in` : null],
+    ['Clip handling', fmt(m.cutting?.clip_handling)],
+  ]],
+  ['Navigation', [
+    ['System', fmt(m.navigation?.system?.replace(/_/g, ' '))],
+    ['Local base station required', fmt(m.navigation?.local_base_required)],
+    ['Accuracy', fmt(m.navigation?.accuracy_cm, 'cm')],
+    ['Obstacle detection', fmt(m.navigation?.obstacle_detection)],
+    ['Pattern rotation', fmt(m.navigation?.pattern_rotation)],
+  ]],
+  ['Power', [
+    ['Source', fmt(m.power?.source?.replace(/_/g, ' '))],
+    ['Battery capacity', fmt(m.power?.battery_kwh, 'kWh')],
+    ['Runtime', fmt(m.power?.runtime_hr, 'hr')],
+    ['Charge time', fmt(m.power?.charge_hr, 'hr')],
+    ['Fast charge available', fmt(m.power?.fast_charge_available)],
+    ['Charge method', fmt(m.power?.charge_method?.replace(/_/g, ' '))],
+    ['Fuel burn', fmt(m.power?.fuel_gal_per_hr, 'gal/hr')],
+    ['Annual energy', fmt(m.power?.annual_kwh, 'kWh/yr')],
+  ]],
+  ['Labor', [
+    ['Supervision, day', fmt(m.labor?.supervision_day?.replace(/_/g, ' '))],
+    ['Supervision, night', fmt(m.labor?.supervision_night?.replace(/_/g, ' '))],
+    ['Night capable', fmt(m.labor?.night_capable)],
+    ['Operators required', fmt(m.labor?.operators_required)],
+    ['Measured labor', fmt(m.labor?.measured_labor_min_per_ac, 'labor-min/ac')],
+  ]],
+  ['Mechanical & cost', [
+    ['Hydraulics', fmt(m.mechanical?.hydraulics_present)],
+    ['Rated life', fmt(m.mechanical?.machine_life_hr, 'hr')],
+    ['Noise', fmt(m.mechanical?.noise_db, 'dB')],
+    ['Max slope', fmt(m.mechanical?.max_slope_pct, '%')],
+    ['List price', m.cost?.list_price_usd ? '$' + m.cost.list_price_usd.toLocaleString() : null],
+    ['Lease available', fmt(m.cost?.lease_available)],
+  ]],
+];
+
+const gaps = specGroups.flatMap(([g, rows]) => rows.filter(([, v]) => v === null).map(([k]) => `${g}: ${k}`));
+const activeConditions = (m.capability?.conditions ?? []).map((c) => conditions[c]).filter(Boolean);
+---
+<Base title={`${m.vendor} ${m.model} — TurfBot`} description={`Specifications and normalized capacity for the ${m.vendor} ${m.model}.`}>
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">{m.vendor} &middot; {CLASS_LABEL[m.autonomy_class]} &middot; {m.status}</p>
+      <h1>{m.model}</h1>
+      <p>
+        <span class={'chip ' + conf}>{conf}</span>
+        &nbsp; Economic model: {m.economic_engine === 'duty_cycle' ? 'duty cycle' : 'session'}
+      </p>
+    </div>
+  </div>
+
+  <div class="widget">
+    <div class="wrap">
+      <h2>Managed acres</h2>
+      {blocked ? (
+        <p class="sub">
+          Capacity is published as &ldquo;{m.capacity.value} acres maintained&rdquo; with no stated mowing
+          frequency, so it cannot be converted to a comparable figure. We are not going to invent one.
+          The missing frequency is itself the finding — it has been requested from the manufacturer.
+        </p>
+      ) : (
+        <>
+          <p class="sub">
+            Published as <strong>{m.capacity.basis.replace(/_/g, ' ')}</strong> = {m.capacity.value}.
+            Converted below to the acreage one unit keeps mowed, at four common frequencies.
+          </p>
+          <div class="bars">
+            {managed.map(({ f, v }) => (
+              <div class="bar-row">
+                <div class="bar-name">{f}&times; per week<em>mowing frequency</em></div>
+                <div class="bar-track">
+                  <div class={'bar-fill ' + (m.autonomy_class === 'fully_autonomous' ? 'full' : m.autonomy_class === 'manual' ? 'manual' : 'semi')}
+                       style={`width:${Math.max(((v ?? 0) / Math.max(...managed.map((x) => x.v ?? 0), 1)) * 100, 2)}%`}></div>
+                </div>
+                <div class="bar-val">{v != null ? v.toFixed(1) + ' ac' : '—'}</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+
+  <section class="band">
+    <div class="wrap">
+      {m.provenance?.dispute && (
+        <div class="dispute">
+          <h3>Disputed capability</h3>
+          <p>{m.provenance.dispute_note}</p>
+        </div>
+      )}
+
+      {activeConditions.map((c) => (
+        <div class="dispute">
+          <h3>{c.label}</h3>
+          <p>{c.rationale}</p>
+          <p><strong>Status:</strong> {c.status ?? 'noted'}</p>
+        </div>
+      ))}
+
+      <h2 class="section-title">Capability by surface</h2>
+      <div class="cap">
+        {SURFACES.map(([key, label]) => (
+          <div class="cap-item">
+            <span class="s">{label}</span>
+            <span class={'v ' + (m.capability?.[key] ?? 'not_capable')}>
+              {(m.capability?.[key] ?? 'unknown').replace(/_/g, ' ')}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {specGroups.map(([group, rows]) => (
+        <table class="spec">
+          <caption>{group}</caption>
+          <tbody>
+            {rows.map(([k, v]) => (
+              <tr>
+                <th>{k}</th>
+                {v === null ? <td class="unknown">not published</td> : <td>{v}</td>}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ))}
+
+      {gaps.length > 0 && (
+        <div class="gaps">
+          <h3>What we still don't know</h3>
+          <ul>{gaps.map((g) => <li>{g}</li>)}</ul>
+        </div>
+      )}
+
+      <h2 class="section-title">Sources</h2>
+      <ul>
+        {(m.provenance?.sources ?? []).map((s) => (
+          <li style="font-size:0.88rem;margin-bottom:6px">
+            {s.url?.startsWith('http')
+              ? <a href={s.url} rel="nofollow noopener">{s.url}</a>
+              : <span>{s.url}</span>}
+            <br /><span style="color:var(--slate)">{s.covers} — accessed {s.accessed}</span>
+          </li>
+        ))}
+      </ul>
+
+      {m.provenance?.notes && (
+        <>
+          <h2 class="section-title" style="margin-top:28px">Notes</h2>
+          <p class="section-lede">{m.provenance.notes}</p>
+        </>
+      )}
+    </div>
+  </section>
+</Base>

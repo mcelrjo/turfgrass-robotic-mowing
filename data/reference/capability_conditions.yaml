@@ -1,0 +1,28 @@
+# Conditional capability flags. A machine may be capable ONLY under stated conditions.
+# The site renders these as a user toggle, not as a footnote.
+
+cool_season_only_for_fairways:
+  label: "Fairways — cool-season turf only"
+  applies_to: [echo-tm-2050, echo-tm-850]
+  user_toggle: true
+  toggle_question: "Are your fairways cool-season (bentgrass, ryegrass, bluegrass, fescue)?"
+  if_true: capable
+  if_false: not_capable
+  rationale: >
+    Project position: a rotary floating-head mulching platform can hold acceptable fairway
+    quality on cool-season turf, but not on warm-season turf (bermudagrass, zoysia), where
+    lateral stem growth and higher shoot density demand a reel cut for acceptable aftercut
+    appearance. ECHO markets these models for fairways without qualification.
+  status: unverified
+  resolution_required: >
+    Measured HOC-vs-quality trial scoring aftercut appearance, scalping on contour, and clip
+    dispersal, run on both cool- and warm-season fairways. Until then the site shows this as
+    a project position, not established fact.
+
+no_striping_random_pattern:
+  label: "No striping — random pattern within wire boundary"
+  applies_to: [echo-tm-2000]
+  user_toggle: false
+  rationale: >
+    Wire-guided machines mow in an irregular pattern by design. Acceptable in rough; usually
+    unacceptable on any surface where presentation matters.

@@ -1,0 +1,84 @@
+id: echo-tm-850
+vendor: ECHO Robotics
+model: TM-850 / TM-850S
+status: announced
+autonomy_class: fully_autonomous
+economic_engine: duty_cycle
+platform_origin: scaled_robotic
+cutting:
+  type: rotary_floating_head
+  units: 2
+  width_in: null
+  hoc_min_in: null
+  hoc_max_in: null
+  clip_handling: mulch
+capability:
+  greens: not_capable
+  tees: not_capable
+  approaches: not_capable
+  fairways: conditional
+  intermediate_rough: conditional
+  primary_rough: capable
+  driving_range: capable
+  conditions:
+  - cool_season_only_for_fairways
+navigation:
+  system: rtk_gnss
+  local_base_required: true
+  accuracy_cm: 2
+  obstacle_detection: 2-4 sonar units
+  pattern_rotation: true
+power:
+  source: battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: null
+  fast_charge_available: false
+  fast_charge_hr: null
+  charge_method: auto_dock
+  fuel_gal_per_hr: null
+  annual_kwh: null
+capacity:
+  basis: ac_per_week
+  value: 7.41
+  vendor_assumed_mow_freq: null
+  ground_speed_mph: null
+  measured_machine_min_per_ac: null
+labor:
+  supervision_day: unattended
+  supervision_night: unattended
+  night_capable: true
+  operators_required: 0
+  measured_labor_min_per_ac: null
+mechanical:
+  hydraulics_present: false
+  machine_life_hr: null
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: 65
+  weight_lb: 154
+  max_slope_pct: 30
+cost:
+  list_price_usd: null
+  currency_original: EUR
+  lease_available: null
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+provenance:
+  confidence: vendor
+  dispute: false
+  sources:
+  - url: https://www.echo-usa.com/turf-mowers/tm-850-turf-mower
+    accessed: '2026-08-01'
+    covers: US listing, marked COMING SOON, GPS-RTK, sports fields/parks/golf
+  - url: https://www.echorobotics.com/en/tm-850s-professional-robotic-lawnmower.html
+    accessed: '2026-08-01'
+    covers: 30,000 m2/week, 2 floating heads, 2 sonar, 30% slope, ~EUR150/yr electricity
+  - url: https://www.dermotcasey.com/product/echo-tm-850-turfmower-30000m%C2%B2/
+    accessed: '2026-08-01'
+    covers: 65 dB, 70 kg, 4 sonars, multizone
+  notes: 'USEFUL PRECEDENT: ECHO publishes TM-850 capacity as 30,000 m2 PER WEEK (=7.41 ac/wk) - an explicit
+    throughput basis, unlike the TM-2050 "acres maintained" figures. Ask the vendor to restate all models
+    on this basis. Combines TM-1050 and TM-2050 technology in a smaller chassis. Marked COMING SOON on
+    echo-usa.com as of 2026-08-01.'

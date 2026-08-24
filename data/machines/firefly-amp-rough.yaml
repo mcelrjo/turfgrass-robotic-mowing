@@ -1,0 +1,76 @@
+id: firefly-amp-rough
+vendor: FireFly Automatix
+model: AMP rough (designation TBD)
+status: unreleased
+autonomy_class: semi_autonomous
+economic_engine: session
+platform_origin: purpose_built
+cutting:
+  type: rotary_deck
+  units: null
+  width_in: 100
+  hoc_min_in: 1.0
+  hoc_max_in: null
+  clip_handling: mulch
+capability:
+  greens: not_capable
+  tees: not_capable
+  approaches: not_capable
+  fairways: not_capable
+  intermediate_rough: vendor_claimed
+  primary_rough: vendor_claimed
+  driving_range: vendor_claimed
+  conditions: []
+navigation:
+  system: network_rtk
+  local_base_required: false
+  accuracy_cm: 1
+  obstacle_detection: lidar + camera + sensor fusion
+  pattern_rotation: null
+power:
+  source: battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: 6.0
+  fast_charge_available: true
+  fast_charge_hr: null
+  charge_method: manual_plug
+  fuel_gal_per_hr: null
+  annual_kwh: null
+capacity:
+  basis: ac_per_hr
+  value: 3.02
+  vendor_assumed_mow_freq: null
+  ground_speed_mph: 6.0
+  measured_machine_min_per_ac: null
+labor:
+  supervision_day: unattended
+  supervision_night: los_supervised
+  night_capable: true
+  operators_required: 0
+  measured_labor_min_per_ac: null
+mechanical:
+  hydraulics_present: false
+  machine_life_hr: 10000
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: null
+  weight_lb: null
+  max_slope_pct: null
+cost:
+  list_price_usd: null
+  currency_original: USD
+  lease_available: false
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+provenance:
+  confidence: assumed
+  dispute: false
+  sources:
+  - url: internal:project-lead-direction
+    accessed: '2026-08-01'
+    covers: mirror AMP-L100 width and platform attributes; cutting higher
+  notes: NOT PUBLICLY ANNOUNCED as of 2026-08-01. Per project direction, width and all platform attributes
+    set equal to AMP-L100, differing only in height of cut. Every capacity and labor figure is INHERITED,
+    not measured. Site must flag this prominently. Replace on vendor release.

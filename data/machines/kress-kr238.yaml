@@ -1,0 +1,76 @@
+id: kress-kr238
+vendor: Kress
+model: KR238 RTKn MasterSeries
+status: current
+autonomy_class: fully_autonomous
+economic_engine: duty_cycle
+platform_origin: scaled_robotic
+cutting:
+  type: rotary_floating_head
+  units: 2
+  width_in: null
+  hoc_min_in: 0.39
+  hoc_max_in: 2.36
+  clip_handling: mulch
+capability:
+  greens: not_capable
+  tees: vendor_claimed
+  approaches: vendor_claimed
+  fairways: vendor_claimed
+  intermediate_rough: vendor_claimed
+  primary_rough: vendor_claimed
+  driving_range: vendor_claimed
+  conditions: []
+navigation:
+  system: network_rtk
+  local_base_required: false
+  accuracy_cm: 2
+  obstacle_detection: AI-powered obstacle avoidance
+  pattern_rotation: null
+power:
+  source: battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: null
+  fast_charge_available: null
+  fast_charge_hr: null
+  charge_method: auto_dock
+  fuel_gal_per_hr: null
+  annual_kwh: null
+capacity:
+  basis: ac_per_day
+  value: 10.0
+  vendor_assumed_mow_freq: null
+  ground_speed_mph: null
+  measured_machine_min_per_ac: null
+labor:
+  supervision_day: unattended
+  supervision_night: unattended
+  night_capable: true
+  operators_required: 0
+  measured_labor_min_per_ac: null
+mechanical:
+  hydraulics_present: false
+  machine_life_hr: null
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: null
+  weight_lb: null
+  max_slope_pct: null
+cost:
+  list_price_usd: null
+  currency_original: USD
+  lease_available: null
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+provenance:
+  confidence: vendor
+  dispute: false
+  sources:
+  - url: https://www.automationhub.com/products/kress-kr238-rtk%E2%81%BF-masterseries-robotic-lawn-mower-up-to-20-acres
+    accessed: '2026-08-01'
+    covers: 20 ac / 48 hr, RTKn over cellular, fairway striping claim
+  notes: Vendor states 20 acres in 48 hours = 10 ac/day throughput. Cellular network RTK means no local
+    base station. Fairway capability claimed but UNVERIFIED - rotary floor of 0.39 in is marginal for
+    tees and low fairway HOC. Price not published in USD.

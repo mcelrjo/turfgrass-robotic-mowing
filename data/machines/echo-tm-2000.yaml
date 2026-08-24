@@ -1,0 +1,79 @@
+id: echo-tm-2000
+vendor: ECHO Robotics
+model: TM-2000
+status: current
+autonomy_class: fully_autonomous
+economic_engine: duty_cycle
+platform_origin: scaled_robotic
+cutting:
+  type: rotary_floating_head
+  units: 5
+  width_in: 40.7
+  hoc_min_in: null
+  hoc_max_in: null
+  clip_handling: mulch
+capability:
+  greens: not_capable
+  tees: not_capable
+  approaches: not_capable
+  fairways: not_capable
+  intermediate_rough: conditional
+  primary_rough: capable
+  driving_range: capable
+  conditions:
+  - no_striping_random_pattern
+navigation:
+  system: perimeter_wire
+  local_base_required: false
+  accuracy_cm: null
+  obstacle_detection: 5 sonar sensors
+  pattern_rotation: false
+power:
+  source: battery_electric
+  battery_kwh: null
+  runtime_hr: null
+  charge_hr: null
+  fast_charge_available: false
+  fast_charge_hr: null
+  charge_method: auto_dock
+  fuel_gal_per_hr: null
+  annual_kwh: 830
+capacity:
+  basis: ac_managed_vendor
+  value: 5.0
+  vendor_assumed_mow_freq: null
+  ground_speed_mph: 2.2
+  measured_machine_min_per_ac: null
+labor:
+  supervision_day: unattended
+  supervision_night: unattended
+  night_capable: true
+  operators_required: 0
+  measured_labor_min_per_ac: null
+mechanical:
+  hydraulics_present: false
+  machine_life_hr: null
+  service_interval_hr: null
+  annual_service_usd: null
+  noise_db: 52
+  weight_lb: null
+  max_slope_pct: null
+cost:
+  list_price_usd: null
+  currency_original: USD
+  lease_available: null
+  annual_subscription_usd: null
+  infrastructure_usd: null
+  residual_pct_5yr: null
+provenance:
+  confidence: vendor
+  dispute: false
+  sources:
+  - url: https://www.echo-usa.com/turf-mowers/tm-2000-turf-mower
+    accessed: '2026-08-01'
+    covers: 5 ac, 52 dB, 5 floating heads, 40.7 in
+  - url: https://groundtech.co.uk/product/echo-tm-2000-robotic-mower/
+    accessed: '2026-08-01'
+    covers: 830 kWh/yr, 2-yr commercial warranty
+  notes: Wire-guided, random pattern within boundary - NO striping. Boundary wire install is a real infrastructure
+    cost and constrains zone changes. Capacity claims range 5-6 ac depending on source.

@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadMachines, CLASS_LABEL } from '../../lib/data.js';
+const machines = loadMachines();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const groups = [
+  ['semi_autonomous', 'Semi-autonomous'],
+  ['fully_autonomous', 'Fully autonomous'],
+  ['manual', 'Manual'],
+];
+---
+<Base title="Machines — TurfBot" description="Specifications for robotic and conventional turf mowers.">
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Specification database</p>
+      <h1>Machines</h1>
+      <p>Grouped by autonomy class, because each class needs a different economic model — session-based for manual and semi-autonomous, duty-cycle for fully autonomous.</p>
+    </div>
+  </div>
+
+  {groups.map(([key, label]) => {
+    const list = machines.filter((m) => m.autonomy_class === key);
+    if (!list.length) return null;
+    return (
+      <section class="band">
+        <div class="wrap">
+          <h2 class="section-title">{label}</h2>
+          <p class="section-lede">
+            {key === 'semi_autonomous' && 'Operator transports and tasks the machine; it executes on its own. Labor is charged per mowing event.'}
+            {key === 'fully_autonomous' && 'Docked in a zone, self-deploying, running a continuous duty cycle. Labor is service and intervention only.'}
+            {key === 'manual' && 'The comparison baseline. Operator present throughout.'}
+          </p>
+          <div class="grid">
+            {list.map((m) => (
+              <a class={'card ' + (key === 'fully_autonomous' ? 'full' : key === 'manual' ? 'manual' : '')}
+                 href={base + '/machines/' + m.id + '/'}>
+                <div class="vendor">{m.vendor}</div>
+                <div class="model">{m.model}</div>
+                <div class="meta">
+                  {m.cutting?.type?.replace(/_/g, ' ')}
+                  {m.cutting?.width_in ? ` · ${m.cutting.width_in} in` : ''}
+                  {m.status !== 'current' ? ` · ${m.status}` : ''}
+                  <br />
+                  <span class={'chip ' + m.provenance.confidence}>{m.provenance.confidence}</span>
+                  {m.provenance.dispute && <span class="chip vendor" style="margin-left:5px">disputed</span>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  })}
+</Base>
