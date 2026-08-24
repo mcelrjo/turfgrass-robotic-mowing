@@ -26,7 +26,10 @@ jobs:
       - name: Check data files
         run: python scripts/validate.py
 
-      - name: Recompute coefficients from trial data
+      - name: Recompute survey results from session data
+        run: python scripts/analyze.py
+
+      - name: Recompute coefficients from trial CSVs
         run: python scripts/derive.py
 
       - uses: actions/setup-node@v4

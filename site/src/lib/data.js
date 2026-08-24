@@ -67,3 +67,12 @@ export const CLASS_LABEL = {
   semi_autonomous: 'Semi-autonomous',
   fully_autonomous: 'Fully autonomous',
 };
+
+
+export function loadResults() {
+  return yaml.load(fs.readFileSync(path.join(DATA, 'reference/results.yaml'), 'utf8'));
+}
+
+export function loadSessions() {
+  return yaml.load(fs.readFileSync(path.join(DATA, 'trials/sessions.yaml'), 'utf8'));
+}

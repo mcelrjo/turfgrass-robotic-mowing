@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadResults } from '../lib/data.js';
+const r = loadResults();
+const p = r.pooled;
+---
+<Base title="Add your course to the study" description="How to contribute autonomous mowing data to the Auburn turfgrass study.">
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Open call &middot; {p.sites} of a target 20 courses</p>
+      <h1>We need 10 to 20 more courses.</h1>
+      <p>
+        Three sites show a direction. Twenty sites would let a superintendent see results from
+        courses that look like theirs — same climate, same budget tier, same acreage — instead of
+        extrapolating from someone else&rsquo;s.
+      </p>
+    </div>
+  </div>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">What participating costs you</h2>
+      <table class="spec">
+        <caption>One mowing session</caption>
+        <tbody>
+          <tr><th>Time on your end</th><td>One morning. Someone with a clipboard records start and finish times.</td></tr>
+          <tr><th>What gets recorded</th><td>Each fairway mowed, transport between them, setup, washdown — and separately, what the operator did while the machine ran.</td></tr>
+          <tr><th>Also useful</th><td>The same fairways mowed manually on a different day, so there is a baseline to compare against.</td></tr>
+          <tr><th>What we need from the office</th><td>Fairway acreage, loaded hourly wage, fuel used, and mower model. Acreage is the one we most often don't get.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-title" style="margin-top:34px">What you get back</h2>
+      <table class="spec">
+        <tbody>
+          <tr><th>Your own numbers</th><td>A written summary of your course's results before anything is published.</td></tr>
+          <tr><th>Comparison</th><td>Where your operation sits against every other participating site.</td></tr>
+          <tr><th>Review rights</th><td>You see your site page before it goes live. If you want something removed, it comes out.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <div class="wrap">
+      <h2 class="section-title">Anonymity</h2>
+      <p class="section-lede">{r.anonymization}</p>
+      <div class="gaps">
+        <h3>Published for every site</h3>
+        <ul>
+          <li>Facility type — private club, resort course, daily fee, municipal</li>
+          <li>Region — Southeast US, Mountain West, Desert Southwest</li>
+          <li>Turf system — warm-season, cool-season, overseeded</li>
+          <li>Acreage, times, fuel, and wage figures</li>
+        </ul>
+      </div>
+      <div class="gaps" style="margin-top:14px">
+        <h3>Never published</h3>
+        <ul>
+          <li>Course or club name</li>
+          <li>Superintendent or staff names</li>
+          <li>City, state, or any location narrower than region</li>
+          <li>Anything you ask us to withhold</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">How to start</h2>
+      <p class="section-lede">
+        Email the turfgrass program at Auburn University and ask for the mowing study data
+        collection packet. You will get three spreadsheets and a two-page protocol. Fill in what
+        you can — a partial submission is far more useful than none, and an empty cell is more
+        useful than a guess.
+      </p>
+      <p class="section-lede">
+        If you run a platform other than the one measured here — a fully autonomous rough mower,
+        a different fairway unit — we especially want your data. Rough mowing is the largest
+        acreage on most courses and currently has no measurements at all.
+      </p>
+    </div>
+  </section>
+</Base>

@@ -34,6 +34,7 @@ the live site will keep serving the previous version until it passes.
 
 ```
 data/                 the single source of truth
+  trials/sessions.yaml  ← the survey dataset the site is built on
   machines/           one YAML file per machine model
   courses/            course profiles from field trials
   trials/             time-motion trial data (CSV)
@@ -76,6 +77,7 @@ See `docs/DATA_REQUESTS.md` for the assignments to hand out.
 |---|---|
 | `python scripts/validate.py` | Checks every data file. Run before each push. |
 | `python scripts/normalize.py` | Prints the managed-acres table for all machines |
+| `python scripts/analyze.py` | Recomputes the published survey results from session data |
 | `python scripts/derive.py` | Recomputes coefficients from trial CSVs |
 | `python scripts/import_from_xlsx.py <file>` | Converts a filled workbook into YAML records |
 

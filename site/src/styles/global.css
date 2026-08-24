@@ -203,3 +203,32 @@ footer.foot a { color: var(--turf-300); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+
+/* ---- KPI block ---- */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2px;
+        background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); }
+.kpi { background: var(--turf-900); padding: 22px 20px; }
+.kpi-n { font-family: var(--mono); font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 600;
+         color: var(--amber); line-height: 1; letter-spacing: -0.03em; }
+.kpi-n span { font-size: 0.45em; letter-spacing: 0; }
+.kpi-l { margin-top: 10px; font-size: 0.82rem; color: var(--dew); line-height: 1.35; }
+.kpi-l em { display: block; font-style: normal; color: var(--turf-300);
+            font-family: var(--mono); font-size: 0.68rem; margin-top: 4px; }
+
+/* ---- buttons ---- */
+.btn { display: inline-block; background: var(--amber); color: #1A1005; text-decoration: none;
+       font-weight: 700; font-size: 0.88rem; padding: 11px 20px; margin-right: 10px;
+       border: 2px solid var(--amber); }
+.btn:hover { background: var(--amber-dim); border-color: var(--amber-dim); color: var(--chalk); }
+.btn.ghost { background: transparent; color: var(--amber); }
+.btn.ghost:hover { background: var(--amber); color: #1A1005; }
+
+/* bars rendered on a light band */
+.bar-row.light .bar-name { color: var(--turf-900); }
+.bar-row.light .bar-name em { color: var(--slate); }
+.bar-row.light .bar-track { background: var(--dew-dim); }
+.bar-row.light .bar-val { color: var(--turf-900); }
+
+table.spec thead th { color: var(--turf-900); font-weight: 700;
+                      border-bottom: 2px solid var(--turf-900); }

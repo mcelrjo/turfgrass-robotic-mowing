@@ -1,0 +1,163 @@
+meta:
+  anonymization: Participating courses are identified only by facility type, region and turf system. Course
+    names, superintendent names and exact locations are never published. Site codes are assigned in order
+    of participation.
+  collected: '2026'
+  protocol: docs/TRIAL_PROTOCOL.md
+sites:
+- code: site-01
+  facility_type: Resort course
+  region: Southeast US
+  turf: Warm-season
+  holes_managed_autonomous: 14
+  autonomous_units: 1
+  sessions: 2
+  fairway_acres: 32.7
+  acres_basis: measured
+  wage_usd_hr: null
+  redeployed_log: false
+  note: Two sessions on consecutive rotations, one nine per day. The only site that measured fairway acreage
+    directly, so it anchors acreage for the others. Manual comparison used two units running a skip-pass
+    double-wide pattern.
+  runs:
+  - session: 01-A
+    nine: first
+    acres: 16.5
+    fairways: 7
+    auto:
+      setup: 24
+      mow: 311
+      transit: 39
+      return: 8
+      clean: 13
+      total: 395
+      operator: 59
+    manual:
+      units: 2
+      setup: 16
+      mow: 213
+      transit: 17
+      return: 7
+      clean: 18
+      elapsed: 271
+      operator: 542
+      model: 100-inch reel, diesel
+  - session: 01-B
+    nine: second
+    acres: 16.2
+    fairways: 7
+    auto:
+      setup: 13
+      mow: 339
+      transit: 43
+      return: 10
+      clean: 8
+      total: 413
+      operator: 36
+    manual:
+      units: 2
+      setup: 16
+      mow: 241
+      transit: 17
+      return: 7
+      clean: 14
+      elapsed: 295
+      operator: 590
+      model: 100-inch reel, diesel
+- code: site-02
+  facility_type: Private club
+  region: Desert Southwest
+  turf: Overseeded warm-season
+  holes_managed_autonomous: 16
+  autonomous_units: 1
+  sessions: 1
+  fairway_acres: 9.8
+  acres_basis: estimated
+  wage_usd_hr: null
+  redeployed_log: true
+  path_link_clusters: 6
+  note: Six fairways in one session. Acreage estimated from the pooled autonomous mowing rate, as the
+    site did not report acres. Path-linking reported across six hole clusters.
+  runs:
+  - session: 02-A
+    nine: partial
+    acres: 9.8
+    fairways: 6
+    auto:
+      setup: 28
+      mow: 194
+      transit: 19
+      return: 10
+      clean: 20
+      total: 271
+      operator: 58
+      battery_used_pct: 80
+      charge_hr: 8-10
+    manual:
+      units: 1
+      setup: 30
+      mow: 198
+      transit: 15
+      return: 10
+      clean: 25
+      elapsed: 278
+      operator: 278
+      fuel_gal: 6.0
+      model: 100-inch reel, diesel
+      replacement_usd: 92000
+  redeployed:
+  - task: Edging sprinkler heads
+    minutes: 120
+  - task: Moving obstacles, ropes and rakes
+    minutes: 60
+  - task: Raking bunkers
+    minutes: 60
+- code: site-03
+  facility_type: Private club
+  region: Mountain West
+  turf: Cool-season
+  holes_managed_autonomous: 14
+  autonomous_units: 1
+  sessions: 1
+  fairway_acres: 9.2
+  acres_basis: estimated
+  wage_usd_hr: 30.09
+  redeployed_log: true
+  path_link_clusters: 1
+  note: Seven fairways attempted; the seventh entry combined mowing, transport and wash and is excluded
+    from the mowing rate. A 20-minute frost delay and a 35-minute mechanic reel check are recorded but
+    excluded from the comparison, as reel service applies to both systems. Operator time is partly estimated
+    where the log combined activities.
+  runs:
+  - session: 03-A
+    nine: partial
+    acres: 9.2
+    fairways: 6
+    auto:
+      setup: 15
+      mow: 183
+      transit: 25
+      return: null
+      clean: null
+      total: null
+      operator: 38
+      operator_basis: partly estimated
+      battery_used_pct: 92
+      frost_delay: 20
+      mechanic_reel_check: 35
+    manual:
+      units: 1
+      setup: 15
+      mow: 227
+      transit: 31
+      return: 5
+      clean: 42
+      elapsed: 320
+      operator: 320
+      fuel_gal: 7.2
+      model: 100-inch reel, diesel
+      replacement_usd: 110000
+      data_note: Log contains a 37-minute unexplained gap and two breaks folded into drive times.
+  redeployed:
+  - task: Hex-plugging annual bluegrass from greens
+    minutes: 300

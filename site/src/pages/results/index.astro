@@ -1,0 +1,156 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadResults } from '../../lib/data.js';
+const r = loadResults();
+const p = r.pooled;
+const e = r.economics;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const maxLabor = Math.max(...r.sites.map((s) => s.manual_labor_min_per_ac));
+---
+<Base title="Results — measured autonomous mowing trials" description="Labor, time, cost and redeployment results from autonomous fairway mowing trials.">
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">{p.sites} sites &middot; {p.sessions} sessions &middot; {p.acres_observed} acres</p>
+      <h1>Results</h1>
+      <p>Every figure below is computed from the session logs. Change the data, the page changes — nothing here is typed by hand.</p>
+    </div>
+  </div>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">Operator time per acre</h2>
+      <p class="section-lede">
+        The core measurement. Manual mowing occupies an operator for the whole session; autonomous
+        mowing occupies them only for setup, transport, any shepherding, and washdown.
+      </p>
+      <div class="bars">
+        {r.sites.map((s) => (
+          <>
+            <div class="bar-row light">
+              <div class="bar-name">{s.facility_type}, {s.region}<em>manual</em></div>
+              <div class="bar-track"><div class="bar-fill manual" style={`width:${(s.manual_labor_min_per_ac / maxLabor) * 100}%`}></div></div>
+              <div class="bar-val">{s.manual_labor_min_per_ac} min</div>
+            </div>
+            <div class="bar-row light" style="margin-bottom:14px">
+              <div class="bar-name"><em>autonomous</em></div>
+              <div class="bar-track"><div class="bar-fill semi" style={`width:${Math.max((s.auto_labor_min_per_ac / maxLabor) * 100, 1)}%`}></div></div>
+              <div class="bar-val">{s.auto_labor_min_per_ac} min</div>
+            </div>
+          </>
+        ))}
+      </div>
+
+      <table class="spec" style="margin-top:34px">
+        <caption>Site by site</caption>
+        <thead><tr>
+          <th style="width:auto">Site</th><th>Acres</th><th>Manual</th><th>Autonomous</th>
+          <th>Hours freed</th><th>Reduction</th>
+        </tr></thead>
+        <tbody>
+          {r.sites.map((s) => (
+            <tr>
+              <th><a href={base + '/results/' + s.code + '/'}>{s.facility_type}, {s.region}</a></th>
+              <td>{s.acres_observed}{s.acres_basis === 'estimated' ? '*' : ''}</td>
+              <td>{s.manual_labor_min_per_ac} min/ac</td>
+              <td>{s.auto_labor_min_per_ac} min/ac</td>
+              <td>{s.labor_saved_hr} hr</td>
+              <td>{s.labor_reduction_pct}%</td>
+            </tr>
+          ))}
+          <tr style="font-weight:700">
+            <th>Pooled</th>
+            <td>{p.acres_observed}</td>
+            <td>{p.manual_labor_min_per_ac} min/ac</td>
+            <td>{p.auto_labor_min_per_ac} min/ac</td>
+            <td>{p.labor_saved_hr} hr</td>
+            <td>{p.labor_reduction_pct}%</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.82rem;color:var(--slate)">* Acreage estimated from the pooled autonomous mowing rate; the site did not report acres.</p>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <div class="wrap">
+      <h2 class="section-title">Machine time — the result people get wrong</h2>
+      <p class="section-lede">
+        Per machine, the autonomous unit mows at parity or slightly better than a conventional
+        100-inch reel mower. It is not a faster machine. It is a machine that does not need
+        someone sitting on it.
+      </p>
+      <table class="spec">
+        <caption>Mowing time per acre, per machine</caption>
+        <tbody>
+          <tr><th>Autonomous</th><td>{p.auto_machine_min_per_ac} machine-min/ac</td></tr>
+          <tr><th>Manual (100-inch reel, diesel)</th><td>{p.manual_machine_min_per_ac} machine-min/ac</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">Where the freed hours went</h2>
+      <p class="section-lede">
+        This is the part manufacturers can&rsquo;t report and superintendents most want to see.
+        Two of {p.sites} sites logged what the operator did while the machine mowed —
+        {p.redeployed_hr} hours of agronomic work that would otherwise have waited.
+      </p>
+      <table class="spec">
+        <caption>Work completed during autonomous mowing</caption>
+        <tbody>
+          {r.redeployed_tasks.map((t) => (
+            <tr><th>{t.task}</th><td>{t.hours} hr</td></tr>
+          ))}
+        </tbody>
+      </table>
+      <div class="gaps">
+        <h3>Why this is reported in hours, not dollars</h3>
+        <ul>
+          <li>No participating course has cut headcount or overtime.</li>
+          <li>So the labor saving is real work gained, not cash removed from a budget.</li>
+          <li>Putting a dollar figure on it would overstate what a club can bank.</li>
+          <li>The hours are the honest unit until a course reports an actual payroll change.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <div class="wrap">
+      <h2 class="section-title">What it is worth, stated carefully</h2>
+      <p class="section-lede">
+        Two of three sites did not report a loaded wage, so the pooled figure uses a national
+        default. Treat these as scale, not as a quote.
+      </p>
+      <table class="spec">
+        <caption>Per acre mowed</caption>
+        <tbody>
+          <tr><th>Operator time freed</th><td>{p.labor_saved_min_per_ac} min/ac</td></tr>
+          <tr><th>Value at ${e.wage_default_usd_hr}/hr loaded (national default)</th><td>${e.labor_value_per_ac_at_default}/ac</td></tr>
+          {e.wage_reported_usd_hr && (
+            <tr><th>Value at ${e.wage_reported_usd_hr}/hr (reported by one site)</th>
+              <td>${(p.labor_saved_min_per_ac / 60 * e.wage_reported_usd_hr).toFixed(2)}/ac</td></tr>
+          )}
+          <tr><th>Diesel used, manual</th><td>{p.fuel_gal_per_ac} gal/ac &rarr; ${e.fuel_cost_per_ac}/ac</td></tr>
+          <tr><th>Electricity, autonomous (estimated)</th><td>{e.kwh_per_ac_estimated} kWh/ac &rarr; ${e.electric_cost_per_ac}/ac</td></tr>
+          <tr><th>Energy saving</th><td>${e.energy_saved_per_ac}/ac</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.85rem;color:var(--slate);max-width:64ch">
+        Energy is the one line that is unambiguously cash. It is also small. Anyone selling this
+        as a fuel-savings story is selling the least significant part of it. Battery pack capacity
+        is still unpublished by the manufacturer, so the electricity figure is an estimate.
+      </p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">Limits</h2>
+      <div class="gaps"><ul>{r.caveats.map((c) => <li>{c}</li>)}</ul></div>
+      <p style="margin-top:22px"><a class="btn" href={base + '/contribute/'}>Submit your course data</a></p>
+    </div>
+  </section>
+</Base>

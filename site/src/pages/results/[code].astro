@@ -1,0 +1,98 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadResults, loadSessions } from '../../lib/data.js';
+
+export function getStaticPaths() {
+  const r = loadResults();
+  const raw = loadSessions();
+  return r.sites.map((s) => ({
+    params: { code: s.code },
+    props: { s, raw: raw.sites.find((x) => x.code === s.code) },
+  }));
+}
+const { s, raw } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title={`${s.facility_type}, ${s.region} — trial results`} description={`Measured autonomous mowing results at an anonymized ${s.facility_type.toLowerCase()}.`}>
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">{s.code} &middot; {s.turf} &middot; {s.sessions} session{s.sessions > 1 ? 's' : ''}</p>
+      <h1>{s.facility_type}, {s.region}</h1>
+      <p>{s.note}</p>
+    </div>
+  </div>
+
+  <div class="widget">
+    <div class="wrap">
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-n">{s.labor_saved_hr}</div><div class="kpi-l">operator hours freed</div></div>
+        <div class="kpi"><div class="kpi-n">{s.labor_reduction_pct}<span>%</span></div><div class="kpi-l">less operator time</div></div>
+        <div class="kpi"><div class="kpi-n">{s.acres_observed}</div><div class="kpi-l">acres observed<em>{s.acres_basis}</em></div></div>
+        <div class="kpi"><div class="kpi-n">{(s.redeployed_min / 60).toFixed(1)}</div><div class="kpi-l">hours redeployed<em>{s.redeployed_log ? 'logged' : 'not logged at this site'}</em></div></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">Time breakdown</h2>
+      {raw.runs.map((run) => (
+        <table class="spec">
+          <caption>Session {run.session} &middot; {run.fairways} fairways &middot; {run.acres} ac</caption>
+          <thead><tr><th style="width:44%">Activity</th><th>Autonomous</th><th>Manual</th></tr></thead>
+          <tbody>
+            <tr><th>Setup and pre-check</th><td>{run.auto.setup} min</td><td>{run.manual.setup} min</td></tr>
+            <tr><th>Mowing</th><td>{run.auto.mow} min</td><td>{run.manual.mow} min{run.manual.units > 1 ? ` × ${run.manual.units} units` : ''}</td></tr>
+            <tr><th>Transport between fairways</th><td>{run.auto.transit} min</td><td>{run.manual.transit} min</td></tr>
+            <tr><th>Return and washdown</th>
+              <td>{run.auto.return != null ? `${run.auto.return + (run.auto.clean || 0)} min` : 'combined in log'}</td>
+              <td>{(run.manual.return || 0) + (run.manual.clean || 0)} min</td></tr>
+            <tr style="font-weight:700"><th>Operator time charged</th>
+              <td>{run.auto.operator} min{run.auto.operator_basis ? ' *' : ''}</td>
+              <td>{run.manual.operator} min</td></tr>
+          </tbody>
+        </table>
+      ))}
+      {raw.runs.some((r) => r.auto.operator_basis) && (
+        <p style="font-size:0.82rem;color:var(--slate)">* Operator time partly estimated where the log combined activities.</p>
+      )}
+
+      {s.redeployed_tasks.length > 0 && (
+        <>
+          <h2 class="section-title" style="margin-top:34px">What the operator did instead</h2>
+          <table class="spec">
+            <caption>Logged during autonomous mowing</caption>
+            <tbody>
+              {s.redeployed_tasks.map((t) => (
+                <tr><th>{t.task}</th><td>{(t.minutes / 60).toFixed(1)} hr</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      <h2 class="section-title" style="margin-top:34px">Reported inputs</h2>
+      <table class="spec">
+        <tbody>
+          <tr><th>Holes managed autonomously</th><td>{raw.holes_managed_autonomous}</td></tr>
+          <tr><th>Autonomous units in service</th><td>{raw.autonomous_units}</td></tr>
+          {raw.path_link_clusters && <tr><th>Path-linked hole clusters</th><td>{raw.path_link_clusters}</td></tr>}
+          {s.fuel_gal && <tr><th>Diesel used, manual mower</th><td>{s.fuel_gal} gal ({s.fuel_gal_per_ac} gal/ac)</td></tr>}
+          {raw.runs[0].auto.battery_used_pct && <tr><th>Battery used</th><td>{raw.runs[0].auto.battery_used_pct}%</td></tr>}
+          <tr><th>Loaded hourly wage</th>
+            <td>{s.wage_is_reported ? `$${s.wage_usd_hr} (reported)` : `$${s.wage_usd_hr} (national default — not reported by this site)`}</td></tr>
+        </tbody>
+      </table>
+
+      {raw.runs.some((r) => r.manual.data_note) && (
+        <div class="dispute">
+          <h3>Data quality note</h3>
+          {raw.runs.filter((r) => r.manual.data_note).map((r) => <p>{r.manual.data_note}</p>)}
+          <p>Recorded rather than removed. Non-productive time is part of what a real mowing morning costs.</p>
+        </div>
+      )}
+
+      <p style="margin-top:26px"><a class="btn ghost" href={base + '/results/'}>Back to all results</a></p>
+    </div>
+  </section>
+</Base>
