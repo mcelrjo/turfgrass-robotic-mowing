@@ -43,6 +43,8 @@ scripts/              validate, normalize, derive, import
 site/                 Astro site; builds from data/ at compile time
 docs/                 methodology, protocols, data dictionary
 intake/               blank workbooks to hand out for data collection
+                        01 machine registry · 02 course intake
+                        03 fairway trial log · 04 rough + robotic equipment
 ```
 
 **Golden rule:** no number is hardcoded in site code. Every coefficient lives in
@@ -69,7 +71,10 @@ python scripts/validate.py
 git add -A && git commit -m "Import machine specs from RA" && git push
 ```
 
-See `docs/DATA_REQUESTS.md` for the assignments to hand out.
+**Plan and assignments:**
+- `docs/PROJECT_PLAN.md` — 10-week schedule to CANVAS 2026 (Nov 1-4, Portland)
+- `docs/STUDENT_TASKS.md` — eight numbered tasks with acceptance criteria
+- `docs/DATA_REQUESTS.md` — standing data requests
 
 ## Useful commands
 

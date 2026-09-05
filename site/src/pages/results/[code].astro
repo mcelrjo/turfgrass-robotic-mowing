@@ -11,6 +11,8 @@ export function getStaticPaths() {
   }));
 }
 const { s, raw } = Astro.props;
+const F = loadResults().pooled.default_mow_freq;
+const wk = s.normalized.weekly.find((x) => x.mow_freq_per_week === F);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Base title={`${s.facility_type}, ${s.region} — trial results`} description={`Measured autonomous mowing results at an anonymized ${s.facility_type.toLowerCase()}.`}>
@@ -25,9 +27,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <div class="widget">
     <div class="wrap">
       <div class="kpis">
-        <div class="kpi"><div class="kpi-n">{s.labor_saved_hr}</div><div class="kpi-l">operator hours freed</div></div>
-        <div class="kpi"><div class="kpi-n">{s.labor_reduction_pct}<span>%</span></div><div class="kpi-l">less operator time</div></div>
-        <div class="kpi"><div class="kpi-n">{s.acres_observed}</div><div class="kpi-l">acres observed<em>{s.acres_basis}</em></div></div>
+        <div class="kpi"><div class="kpi-n">{wk.saved_hr_per_week}</div><div class="kpi-l">man-hours saved per week<em>standard 18-hole course, {F}&times;/wk</em></div></div>
+        <div class="kpi"><div class="kpi-n">{s.normalized.reduction_pct}<span>%</span></div><div class="kpi-l">less operator time</div></div>
+        <div class="kpi"><div class="kpi-n">{s.full_course.acres}</div><div class="kpi-l">acres of fairway managed<em>{s.full_course.is_extrapolated ? 'scaled from ' + s.observed.fairways + ' measured fairways' : 'fully measured'}</em></div></div>
         <div class="kpi"><div class="kpi-n">{(s.redeployed_min / 60).toFixed(1)}</div><div class="kpi-l">hours redeployed<em>{s.redeployed_log ? 'logged' : 'not logged at this site'}</em></div></div>
       </div>
     </div>
@@ -35,7 +37,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <section class="band">
     <div class="wrap">
-      <h2 class="section-title">Time breakdown</h2>
+      <h2 class="section-title">Scaled three ways</h2>
+      <table class="spec">
+        <tbody>
+          <tr><th>As measured</th><td>{s.observed.acres} ac observed &middot; {s.observed.saved_hr} hr saved &middot; {s.observed.reduction_pct}% less</td></tr>
+          <tr><th>This course's full fairways</th><td>{s.full_course.acres} ac &middot; {s.full_course.saved_hr} hr saved per pass &middot; {s.full_course.weekly.find((x) => x.mow_freq_per_week === F).saved_hr_per_week} hr/week at {F}&times;</td></tr>
+          <tr><th>Standard 18-hole course</th><td>{s.normalized.acres} ac &middot; {s.normalized.saved_hr} hr saved per pass &middot; {wk.saved_hr_per_week} hr/week at {F}&times;</td></tr>
+        </tbody>
+      </table>
+      <table class="spec">
+        <caption>This site's measured coefficients</caption>
+        <tbody>
+          <tr><th>Autonomous, fixed per session</th><td>{s.coefficients.auto_fixed_min_per_session} min</td></tr>
+          <tr><th>Autonomous, shepherding</th><td>{s.coefficients.auto_shepherd_min_per_session} min</td></tr>
+          <tr><th>Manual, fixed per unit-session</th><td>{s.coefficients.manual_fixed_min_per_unit_session} min</td></tr>
+          <tr><th>Manual, variable per acre</th><td>{s.coefficients.manual_variable_min_per_ac} min/ac</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-title" style="margin-top:34px">Time breakdown</h2>
       {raw.runs.map((run) => (
         <table class="spec">
           <caption>Session {run.session} &middot; {run.fairways} fairways &middot; {run.acres} ac</caption>
@@ -78,6 +98,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <tr><th>Autonomous units in service</th><td>{raw.autonomous_units}</td></tr>
           {raw.path_link_clusters && <tr><th>Path-linked hole clusters</th><td>{raw.path_link_clusters}</td></tr>}
           {s.fuel_gal && <tr><th>Diesel used, manual mower</th><td>{s.fuel_gal} gal ({s.fuel_gal_per_ac} gal/ac)</td></tr>}
+          <tr><th>Fairway holes managed autonomously</th><td>{s.holes_managed}</td></tr>
           {raw.runs[0].auto.battery_used_pct && <tr><th>Battery used</th><td>{raw.runs[0].auto.battery_used_pct}%</td></tr>}
           <tr><th>Loaded hourly wage</th>
             <td>{s.wage_is_reported ? `$${s.wage_usd_hr} (reported)` : `$${s.wage_usd_hr} (national default — not reported by this site)`}</td></tr>

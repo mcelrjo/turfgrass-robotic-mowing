@@ -5,87 +5,134 @@ const r = loadResults();
 const p = r.pooled;
 const e = r.economics;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const maxLabor = Math.max(...r.sites.map((s) => s.manual_labor_min_per_ac));
+const F = p.default_mow_freq;
+const w = (s) => s.normalized.weekly.find((x) => x.mow_freq_per_week === F);
 ---
-<Base title="Results — measured autonomous mowing trials" description="Labor, time, cost and redeployment results from autonomous fairway mowing trials.">
+<Base title="Results — measured autonomous mowing trials" description="Man-hours saved, method, and site-by-site results from autonomous fairway mowing trials.">
   <div class="hero">
     <div class="wrap">
-      <p class="eyebrow">{p.sites} sites &middot; {p.sessions} sessions &middot; {p.acres_observed} acres</p>
+      <p class="eyebrow">{p.sites} sites &middot; {p.sessions} sessions &middot; {p.observed_acres} acres measured</p>
       <h1>Results</h1>
-      <p>Every figure below is computed from the session logs. Change the data, the page changes — nothing here is typed by hand.</p>
+      <p>{r.method_note}</p>
     </div>
   </div>
 
   <section class="band">
     <div class="wrap">
-      <h2 class="section-title">Operator time per acre</h2>
+      <p class="level-note">Level 3 — normalized</p>
+      <h2 class="section-title">Man-hours per week on a standard {p.reference_acres}-acre course</h2>
       <p class="section-lede">
-        The core measurement. Manual mowing occupies an operator for the whole session; autonomous
-        mowing occupies them only for setup, transport, any shepherding, and washdown.
+        This is the comparable number. Each site's own measured coefficients, applied to the same
+        course, at {F} mowings per week.
       </p>
-      <div class="bars">
-        {r.sites.map((s) => (
-          <>
-            <div class="bar-row light">
-              <div class="bar-name">{s.facility_type}, {s.region}<em>manual</em></div>
-              <div class="bar-track"><div class="bar-fill manual" style={`width:${(s.manual_labor_min_per_ac / maxLabor) * 100}%`}></div></div>
-              <div class="bar-val">{s.manual_labor_min_per_ac} min</div>
-            </div>
-            <div class="bar-row light" style="margin-bottom:14px">
-              <div class="bar-name"><em>autonomous</em></div>
-              <div class="bar-track"><div class="bar-fill semi" style={`width:${Math.max((s.auto_labor_min_per_ac / maxLabor) * 100, 1)}%`}></div></div>
-              <div class="bar-val">{s.auto_labor_min_per_ac} min</div>
-            </div>
-          </>
-        ))}
-      </div>
-
-      <table class="spec" style="margin-top:34px">
-        <caption>Site by site</caption>
-        <thead><tr>
-          <th style="width:auto">Site</th><th>Acres</th><th>Manual</th><th>Autonomous</th>
-          <th>Hours freed</th><th>Reduction</th>
-        </tr></thead>
+      <table class="spec">
+        <thead><tr><th style="width:auto">Site</th><th>Manual</th><th>Autonomous</th><th>Saved</th><th>Reduction</th></tr></thead>
         <tbody>
           {r.sites.map((s) => (
             <tr>
               <th><a href={base + '/results/' + s.code + '/'}>{s.facility_type}, {s.region}</a></th>
-              <td>{s.acres_observed}{s.acres_basis === 'estimated' ? '*' : ''}</td>
-              <td>{s.manual_labor_min_per_ac} min/ac</td>
-              <td>{s.auto_labor_min_per_ac} min/ac</td>
-              <td>{s.labor_saved_hr} hr</td>
-              <td>{s.labor_reduction_pct}%</td>
+              <td>{w(s).manual_hr_per_week} hr/wk</td>
+              <td>{w(s).auto_hr_per_week} hr/wk</td>
+              <td>{w(s).saved_hr_per_week} hr/wk</td>
+              <td>{s.normalized.reduction_pct}%</td>
             </tr>
           ))}
-          <tr style="font-weight:700">
-            <th>Pooled</th>
-            <td>{p.acres_observed}</td>
-            <td>{p.manual_labor_min_per_ac} min/ac</td>
-            <td>{p.auto_labor_min_per_ac} min/ac</td>
-            <td>{p.labor_saved_hr} hr</td>
-            <td>{p.labor_reduction_pct}%</td>
-          </tr>
         </tbody>
       </table>
-      <p style="font-size:0.82rem;color:var(--slate)">* Acreage estimated from the pooled autonomous mowing rate; the site did not report acres.</p>
+      <table class="spec">
+        <caption>At other mowing frequencies — saved hours per week</caption>
+        <thead><tr><th style="width:auto">Site</th>
+          {p.normalized.weekly.map((x) => <th>{x.mow_freq_per_week}&times;/wk</th>)}</tr></thead>
+        <tbody>
+          {r.sites.map((s) => (
+            <tr><th>{s.facility_type}, {s.region}</th>
+              {s.normalized.weekly.map((x) => <td>{x.saved_hr_per_week} hr</td>)}</tr>
+          ))}
+        </tbody>
+      </table>
+      <p style="font-size:0.85rem;color:var(--slate);max-width:66ch">
+        No site reported its mowing frequency, so this is the reader's input rather than a
+        measurement. It is now a required field for new participants.
+      </p>
     </div>
   </section>
 
   <section class="band alt">
     <div class="wrap">
-      <h2 class="section-title">Machine time — the result people get wrong</h2>
+      <h2 class="section-title">Why the sites converge here but not in the raw data</h2>
       <p class="section-lede">
-        Per machine, the autonomous unit mows at parity or slightly better than a conventional
-        100-inch reel mower. It is not a faster machine. It is a machine that does not need
-        someone sitting on it.
+        Observed hours are not comparable — one site logged {Math.max(...r.sites.map((s) => s.observed.acres))} acres
+        and another {Math.min(...r.sites.map((s) => s.observed.acres))}. Rates are comparable, and they are
+        consistent across all three.
       </p>
       <table class="spec">
-        <caption>Mowing time per acre, per machine</caption>
+        <caption>Labor model</caption>
         <tbody>
-          <tr><th>Autonomous</th><td>{p.auto_machine_min_per_ac} machine-min/ac</td></tr>
-          <tr><th>Manual (100-inch reel, diesel)</th><td>{p.manual_machine_min_per_ac} machine-min/ac</td></tr>
+          <tr><th>Autonomous, fixed per session</th><td>{p.coefficients.auto_fixed_min_per_session} min</td></tr>
+          <tr><th>Autonomous, shepherding per session</th><td>{p.coefficients.auto_shepherd_min_per_session} min</td></tr>
+          <tr><th>Manual, fixed per unit-session</th><td>{p.coefficients.manual_fixed_min_per_unit_session} min</td></tr>
+          <tr><th>Manual, variable per acre</th><td>{p.coefficients.manual_variable_min_per_ac} min/ac</td></tr>
+          <tr><th>Autonomous session capacity</th><td>{p.auto_session_cap_ac} ac per unit per session</td></tr>
         </tbody>
       </table>
+      <div class="gaps">
+        <h3>The asymmetry, stated plainly</h3>
+        <ul>
+          <li>Manual labor scales with acreage — someone rides the machine for every acre.</li>
+          <li>Autonomous labor scales with sessions — someone starts it and collects it.</li>
+          <li>So the saving grows with course size and with mowing frequency.</li>
+          <li>And a site that mows more acres per session looks better in raw data purely because its fixed overhead is spread further.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <p class="level-note">Level 2 — each course's own fairways</p>
+      <h2 class="section-title">What each participating course actually gets</h2>
+      <table class="spec">
+        <thead><tr><th style="width:auto">Site</th><th>Managed fairway</th><th>Basis</th>
+          <th>Saved per pass</th><th>Saved per week at {F}&times;</th></tr></thead>
+        <tbody>
+          {r.sites.map((s) => (
+            <tr>
+              <th>{s.facility_type}, {s.region}</th>
+              <td>{s.full_course.acres} ac</td>
+              <td>{s.full_course.is_extrapolated
+                ? `measured on ${s.observed.fairways} of ${s.holes_managed}, scaled ×${s.full_course.scale_factor}`
+                : 'fully measured'}</td>
+              <td>{s.full_course.saved_hr} hr</td>
+              <td>{s.full_course.weekly.find((x) => x.mow_freq_per_week === F).saved_hr_per_week} hr</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <div class="wrap">
+      <p class="level-note">Level 1 — as measured</p>
+      <h2 class="section-title">The raw observations</h2>
+      <p class="section-lede">
+        Everything above is built from these. Published so anyone can check the arithmetic.
+      </p>
+      <table class="spec">
+        <thead><tr><th style="width:auto">Site</th><th>Acres</th><th>Manual</th><th>Autonomous</th><th>Saved</th></tr></thead>
+        <tbody>
+          {r.sites.map((s) => (
+            <tr>
+              <th>{s.facility_type}, {s.region}</th>
+              <td>{s.observed.acres}{s.observed.acres_basis === 'estimated' ? '*' : ''}</td>
+              <td>{s.observed.manual_min} min ({s.observed.manual_min_per_ac}/ac)</td>
+              <td>{s.observed.auto_min} min ({s.observed.auto_min_per_ac}/ac)</td>
+              <td>{s.observed.saved_hr} hr</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p style="font-size:0.82rem;color:var(--slate)">* Acreage estimated from the pooled autonomous mowing rate; the site did not report acres.</p>
     </div>
   </section>
 
@@ -93,60 +140,36 @@ const maxLabor = Math.max(...r.sites.map((s) => s.manual_labor_min_per_ac));
     <div class="wrap">
       <h2 class="section-title">Where the freed hours went</h2>
       <p class="section-lede">
-        This is the part manufacturers can&rsquo;t report and superintendents most want to see.
         Two of {p.sites} sites logged what the operator did while the machine mowed —
         {p.redeployed_hr} hours of agronomic work that would otherwise have waited.
       </p>
       <table class="spec">
         <caption>Work completed during autonomous mowing</caption>
-        <tbody>
-          {r.redeployed_tasks.map((t) => (
-            <tr><th>{t.task}</th><td>{t.hours} hr</td></tr>
-          ))}
-        </tbody>
+        <tbody>{r.redeployed_tasks.map((t) => <tr><th>{t.task}</th><td>{t.hours} hr</td></tr>)}</tbody>
       </table>
       <div class="gaps">
-        <h3>Why this is reported in hours, not dollars</h3>
+        <h3>Why hours, not dollars</h3>
         <ul>
           <li>No participating course has cut headcount or overtime.</li>
-          <li>So the labor saving is real work gained, not cash removed from a budget.</li>
-          <li>Putting a dollar figure on it would overstate what a club can bank.</li>
-          <li>The hours are the honest unit until a course reports an actual payroll change.</li>
+          <li>The saving is work gained, not cash removed from a budget.</li>
+          <li>For scale: {p.normalized.weekly.find((x) => x.mow_freq_per_week === F).saved_hr_per_week} hr/week
+              at ${e.wage_default_usd_hr}/hr is about ${e.reference_weekly_value_default.toLocaleString()}/week,
+              ${e.reference_annual_value_default.toLocaleString()} over a 30-week season.</li>
+          <li>Treat that as the value of the work done, not money a club can bank.</li>
         </ul>
       </div>
+      <table class="spec" style="margin-top:24px">
+        <caption>Energy — the one unambiguous cash line</caption>
+        <tbody>
+          <tr><th>Diesel, manual</th><td>{e.fuel_gal_per_ac} gal/ac &rarr; ${e.fuel_cost_per_ac}/ac</td></tr>
+          <tr><th>Electricity, autonomous (estimated)</th><td>{e.kwh_per_ac_estimated} kWh/ac &rarr; ${e.electric_cost_per_ac}/ac</td></tr>
+          <tr><th>Saving</th><td>${e.energy_saved_per_ac}/ac</td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
   <section class="band alt">
-    <div class="wrap">
-      <h2 class="section-title">What it is worth, stated carefully</h2>
-      <p class="section-lede">
-        Two of three sites did not report a loaded wage, so the pooled figure uses a national
-        default. Treat these as scale, not as a quote.
-      </p>
-      <table class="spec">
-        <caption>Per acre mowed</caption>
-        <tbody>
-          <tr><th>Operator time freed</th><td>{p.labor_saved_min_per_ac} min/ac</td></tr>
-          <tr><th>Value at ${e.wage_default_usd_hr}/hr loaded (national default)</th><td>${e.labor_value_per_ac_at_default}/ac</td></tr>
-          {e.wage_reported_usd_hr && (
-            <tr><th>Value at ${e.wage_reported_usd_hr}/hr (reported by one site)</th>
-              <td>${(p.labor_saved_min_per_ac / 60 * e.wage_reported_usd_hr).toFixed(2)}/ac</td></tr>
-          )}
-          <tr><th>Diesel used, manual</th><td>{p.fuel_gal_per_ac} gal/ac &rarr; ${e.fuel_cost_per_ac}/ac</td></tr>
-          <tr><th>Electricity, autonomous (estimated)</th><td>{e.kwh_per_ac_estimated} kWh/ac &rarr; ${e.electric_cost_per_ac}/ac</td></tr>
-          <tr><th>Energy saving</th><td>${e.energy_saved_per_ac}/ac</td></tr>
-        </tbody>
-      </table>
-      <p style="font-size:0.85rem;color:var(--slate);max-width:64ch">
-        Energy is the one line that is unambiguously cash. It is also small. Anyone selling this
-        as a fuel-savings story is selling the least significant part of it. Battery pack capacity
-        is still unpublished by the manufacturer, so the electricity figure is an estimate.
-      </p>
-    </div>
-  </section>
-
-  <section class="band">
     <div class="wrap">
       <h2 class="section-title">Limits</h2>
       <div class="gaps"><ul>{r.caveats.map((c) => <li>{c}</li>)}</ul></div>

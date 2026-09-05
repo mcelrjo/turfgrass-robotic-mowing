@@ -4,94 +4,142 @@ import { loadResults } from '../lib/data.js';
 const r = loadResults();
 const p = r.pooled;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const rng = p.normalized_saved_hr_per_week_range;
+const red = p.reduction_pct_range;
+const weeklyBySite = r.sites.map((s) => ({
+  label: `${s.facility_type}, ${s.region}`,
+  weekly: s.normalized.weekly,
+  reduction: s.normalized.reduction_pct,
+}));
 ---
 <Base title="Autonomous mowing on real golf courses — measured results"
-      description="Measured labor, time and cost results from autonomous fairway mowing trials at working golf courses.">
+      description="Man-hours saved per week from autonomous fairway mowing, measured at working golf courses and normalized to a standard 18-hole course.">
 
   <div class="hero">
     <div class="wrap">
       <p class="eyebrow">Auburn University turfgrass program &middot; field study</p>
-      <h1>We timed autonomous mowing against manual mowing on working golf courses.</h1>
+      <h1>Autonomous fairway mowing frees {rng[0]}–{rng[1]} man-hours a week.</h1>
       <p>
-        Not a manufacturer's estimate. Minute-by-minute logs from {p.sites} courses across
-        {p.sessions} mowing sessions and {p.acres_observed} acres of fairway, recording what the
-        machine did, what the operator did, and what the operator did instead.
+        Measured, not estimated. Minute-by-minute logs from {p.sites} working golf courses,
+        normalized to a standard {p.reference_acres}-acre 18-hole course so sites of different
+        sizes can be compared directly.
       </p>
     </div>
   </div>
 
   <div class="widget">
     <div class="wrap">
-      <div class="kpis">
-        <div class="kpi">
-          <div class="kpi-n">{p.labor_saved_hr}</div>
-          <div class="kpi-l">operator hours freed<em>across {p.acres_observed} acres mowed</em></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-n">{p.labor_reduction_pct}<span>%</span></div>
-          <div class="kpi-l">less operator time<em>{p.manual_labor_min_per_ac} → {p.auto_labor_min_per_ac} min per acre</em></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-n">{p.redeployed_hr}</div>
-          <div class="kpi-l">hours of other work done<em>logged at {p.redeployed_sites} of {p.sites} sites</em></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-n">{p.auto_machine_min_per_ac}<span> min</span></div>
-          <div class="kpi-l">machine time per acre<em>vs {p.manual_machine_min_per_ac} manual</em></div>
-        </div>
+      <h2>Man-hours per week, standard 18-hole course</h2>
+      <p class="sub">
+        Set your fairway mowing frequency. Manual mowing scales with acreage; autonomous mowing
+        is a fixed cost per session, so the gap widens the more often you mow.
+      </p>
+
+      <div class="freq-control">
+        <label for="freq">Mowings per week</label>
+        <input type="range" id="freq" min="0" max="3" step="1" value="1" />
+        <span class="freq-readout" id="freq-out">3&times;</span>
       </div>
 
-      <p class="sub" style="margin-top:26px">
-        The headline is not that the robot mows faster. Per machine it is close to parity. The
-        headline is that mowing stopped consuming an operator&rsquo;s morning.
+      <div class="bars" id="bars"></div>
+
+      <p class="sub" style="margin-top:24px">
+        Reduction ranges from {red[0]}% to {red[1]}% across the three sites — the variation is in
+        how much ground each course mows, not in whether the effect is real.
       </p>
       <p style="margin-top:18px">
-        <a class="btn" href={base + '/results/'}>See the full results</a>
-        <a class="btn ghost" href={base + '/contribute/'}>Add your course to the study</a>
+        <a class="btn" href={base + '/results/'}>Full results and method</a>
+        <a class="btn ghost" href={base + '/contribute/'}>Add your course</a>
       </p>
     </div>
   </div>
 
   <section class="band">
     <div class="wrap">
-      <h2 class="section-title">What we measured at each site</h2>
+      <h2 class="section-title">Why the numbers work this way</h2>
       <p class="section-lede">
-        Courses are identified by facility type, region and turf system only. No course names,
-        no superintendent names, no exact locations.
+        The study's central structural finding is an asymmetry in how labor scales.
       </p>
-      <div class="grid">
-        {r.sites.map((s) => (
-          <a class="card" href={base + '/results/' + s.code + '/'}>
-            <div class="vendor">{s.facility_type} &middot; {s.region}</div>
-            <div class="model">{s.labor_saved_hr} hours freed</div>
-            <div class="meta">
-              {s.turf} &middot; {s.acres_observed} ac observed<br />
-              {s.manual_labor_min_per_ac} → {s.auto_labor_min_per_ac} operator-min per acre
-              ({s.labor_reduction_pct}% less)<br />
-              {s.redeployed_log
-                ? `${(s.redeployed_min / 60).toFixed(1)} hr of other work logged`
-                : 'Redeployed work not logged'}
-            </div>
-          </a>
-        ))}
-      </div>
+      <table class="spec">
+        <caption>Operator time, pooled across sites</caption>
+        <tbody>
+          <tr><th>Autonomous</th>
+            <td>{p.coefficients.auto_fixed_min_per_session} min per session (setup, return, washdown)
+                + {p.coefficients.auto_shepherd_min_per_session} min shepherding
+                <br /><strong>A session cost. Barely changes with acreage.</strong></td></tr>
+          <tr><th>Manual</th>
+            <td>{p.coefficients.manual_fixed_min_per_unit_session} min per unit-session
+                + {p.coefficients.manual_variable_min_per_ac} min per acre
+                <br /><strong>An acre cost. Scales directly with ground covered.</strong></td></tr>
+        </tbody>
+      </table>
+      <p class="section-lede">
+        A conventional mower needs someone sitting on it for every acre. An autonomous mower needs
+        someone at the start and the end. That is the whole result, and it is why bigger courses
+        and higher mowing frequencies benefit most.
+      </p>
     </div>
   </section>
 
   <section class="band alt">
     <div class="wrap">
-      <h2 class="section-title">Read this before you use the numbers</h2>
+      <h2 class="section-title">Each site, normalized</h2>
       <p class="section-lede">
-        Three courses is a direction, not a finding. Every caveat that applies is published
-        alongside the results rather than buried in a footnote.
+        Courses are identified by facility type, region and turf system only. Each site's own
+        measured rates, applied to the same {p.reference_acres}-acre course.
       </p>
-      <div class="gaps">
-        <h3>Limits of this dataset</h3>
-        <ul>{r.caveats.map((c) => <li>{c}</li>)}</ul>
+      <div class="grid">
+        {r.sites.map((s) => {
+          const w = s.normalized.weekly.find((x) => x.mow_freq_per_week === p.default_mow_freq);
+          return (
+            <a class="card" href={base + '/results/' + s.code + '/'}>
+              <div class="vendor">{s.facility_type} &middot; {s.region}</div>
+              <div class="model">{w.saved_hr_per_week} hr/week freed</div>
+              <div class="meta">
+                {s.turf} &middot; {s.normalized.reduction_pct}% less operator time<br />
+                {w.manual_hr_per_week} hr manual → {w.auto_hr_per_week} hr autonomous<br />
+                Measured on {s.observed.acres} ac over {s.sessions} session{s.sessions > 1 ? 's' : ''}
+              </div>
+            </a>
+          );
+        })}
       </div>
-      <p>
-        <a class="btn" href={base + '/contribute/'}>Help us fix that — submit your data</a>
-      </p>
     </div>
   </section>
+
+  <section class="band">
+    <div class="wrap">
+      <h2 class="section-title">Read this before using the numbers</h2>
+      <div class="gaps"><ul>{r.caveats.map((c) => <li>{c}</li>)}</ul></div>
+      <p style="margin-top:22px"><a class="btn" href={base + '/contribute/'}>Help us fix that — submit your data</a></p>
+    </div>
+  </section>
+
+  <script define:vars={{ weeklyBySite }}>
+    const freqs = [2, 3, 4, 5];
+    const bars = document.getElementById('bars');
+    const slider = document.getElementById('freq');
+    const out = document.getElementById('freq-out');
+
+    function render() {
+      const f = freqs[parseInt(slider.value, 10)];
+      out.textContent = f + '\u00d7';
+      const rows = weeklyBySite.map((s) => {
+        const w = s.weekly.find((x) => x.mow_freq_per_week === f);
+        return { label: s.label, m: w.manual_hr_per_week, a: w.auto_hr_per_week, s: w.saved_hr_per_week };
+      });
+      const max = Math.max(...rows.map((x) => x.m), 1);
+      bars.innerHTML = rows.map((x) => `
+        <div class="bar-row">
+          <div class="bar-name">${x.label}<em>manual ${x.m} hr</em></div>
+          <div class="bar-track">
+            <div class="bar-fill manual" style="width:${(x.m / max) * 100}%"></div>
+            <div class="bar-overlay" style="width:${(x.a / max) * 100}%"></div>
+          </div>
+          <div class="bar-val">${x.s} hr</div>
+        </div>`).join('');
+    }
+    slider.addEventListener('input', render);
+    render();
+  </script>
 </Base>

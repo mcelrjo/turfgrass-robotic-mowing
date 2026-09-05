@@ -232,3 +232,11 @@ footer.foot a { color: var(--turf-300); }
 
 table.spec thead th { color: var(--turf-900); font-weight: 700;
                       border-bottom: 2px solid var(--turf-900); }
+
+
+/* autonomous time overlaid on the manual bar - the visible remainder is the saving */
+.bar-overlay { position: absolute; left: 0; top: 0; height: 100%;
+  background-image: repeating-linear-gradient(90deg, #2C5C45 0 14px, #38765A 14px 28px);
+  border-right: 2px solid var(--amber); }
+.level-note { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--amber-dim); margin: 0 0 6px; }

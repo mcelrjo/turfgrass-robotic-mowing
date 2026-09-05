@@ -3,57 +3,158 @@ warning: GENERATED FILE - do not edit. Change data/trials/sessions.yaml and re-r
 anonymization: Participating courses are identified only by facility type, region and turf system. Course
   names, superintendent names and exact locations are never published. Site codes are assigned in order
   of participation.
+method_note: Sites observed very different amounts of ground, so raw hours are not comparable. Each site's
+  measured labor coefficients are therefore applied to a standard 31.9-acre 18-hole course. Autonomous
+  labor is modelled as a per-session cost (setup, return, washdown, shepherding); manual labor as a per-acre
+  cost. That asymmetry is the study's central structural finding.
 pooled:
   sites: 3
   sessions: 4
-  acres_observed: 51.7
-  manual_labor_hr: 28.8
-  auto_labor_hr: 3.2
-  labor_saved_hr: 25.6
-  labor_reduction_pct: 89.0
-  manual_labor_min_per_ac: 33.5
-  auto_labor_min_per_ac: 3.7
-  labor_saved_min_per_ac: 29.8
-  auto_machine_min_per_ac: 19.9
-  manual_machine_min_per_ac: 25.8
+  observed_acres: 51.7
+  observed_manual_hr: 28.8
+  observed_auto_hr: 3.2
+  observed_saved_hr: 25.6
+  coefficients:
+    auto_fixed_min_per_session: 44.7
+    auto_shepherd_min_per_session: 3.2
+    manual_fixed_min_per_unit_session: 55.3
+    manual_variable_min_per_ac: 26.5
+  reference_acres: 31.9
+  auto_session_cap_ac: 16.5
+  normalized:
+    acres: 31.9
+    auto_sessions: 2
+    manual_unit_sessions: 4
+    auto_min: 96
+    manual_min: 1067
+    saved_min: 971
+    auto_hr: 1.6
+    manual_hr: 17.8
+    saved_hr: 16.2
+    reduction_pct: 91.0
+    weekly:
+    - mow_freq_per_week: 2.0
+      manual_hr_per_week: 35.6
+      auto_hr_per_week: 3.2
+      saved_hr_per_week: 32.4
+    - mow_freq_per_week: 3.0
+      manual_hr_per_week: 53.4
+      auto_hr_per_week: 4.8
+      saved_hr_per_week: 48.5
+    - mow_freq_per_week: 4.0
+      manual_hr_per_week: 71.1
+      auto_hr_per_week: 6.4
+      saved_hr_per_week: 64.7
+    - mow_freq_per_week: 5.0
+      manual_hr_per_week: 88.9
+      auto_hr_per_week: 8.0
+      saved_hr_per_week: 80.9
+  normalized_saved_hr_per_week_range:
+  - 38.7
+  - 53.4
+  reduction_pct_range:
+  - 86.9
+  - 93.3
   redeployed_hr: 9.0
   redeployed_sites: 2
-  fuel_gal_per_ac: 0.69
+  default_mow_freq: 3.0
 economics:
   wage_default_usd_hr: 24.5
   wage_reported_usd_hr: 30.09
-  labor_value_per_ac_at_default: 12.17
   diesel_usd_gal: 4.5
   electricity_usd_kwh: 0.135
   kwh_per_ac_estimated: 2.7
-  fuel_cost_per_ac: 3.1
+  fuel_gal_per_ac: 0.69
+  fuel_cost_per_ac: 3.13
   electric_cost_per_ac: 0.36
-  energy_saved_per_ac: 2.74
+  energy_saved_per_ac: 2.76
+  reference_weekly_value_default: 1189
+  reference_annual_value_default: 35684
 sites:
 - code: site-01
   facility_type: Resort course
   region: Southeast US
   turf: Warm-season
   sessions: 2
-  acres_observed: 32.7
-  acres_basis: measured
-  manual_labor_min: 1132
-  auto_labor_min: 95
-  labor_saved_min: 1037
-  labor_saved_hr: 17.3
-  labor_reduction_pct: 91.6
-  manual_labor_min_per_ac: 34.6
-  auto_labor_min_per_ac: 2.9
-  auto_machine_min_per_ac: 19.9
-  manual_machine_min_per_ac: 27.8
-  auto_transit_min: 82
-  manual_transit_min: 34
+  holes_managed: 14
+  coefficients:
+    auto_fixed_min_per_session: 38.0
+    auto_shepherd_min_per_session: 9.5
+    manual_fixed_min_per_unit_session: 39.0
+    manual_variable_min_per_ac: 29.8
+  observed:
+    acres: 32.7
+    fairways: 14
+    acres_basis: measured
+    manual_min: 1132
+    auto_min: 95
+    saved_min: 1037
+    saved_hr: 17.3
+    manual_min_per_ac: 34.6
+    auto_min_per_ac: 2.9
+    reduction_pct: 91.6
+  full_course:
+    acres: 32.7
+    scale_factor: 1.0
+    is_extrapolated: false
+    auto_sessions: 2
+    manual_unit_sessions: 5
+    auto_min: 95
+    manual_min: 1169
+    saved_min: 1074
+    auto_hr: 1.6
+    manual_hr: 19.5
+    saved_hr: 17.9
+    reduction_pct: 91.9
+    weekly:
+    - mow_freq_per_week: 2.0
+      manual_hr_per_week: 39.0
+      auto_hr_per_week: 3.2
+      saved_hr_per_week: 35.8
+    - mow_freq_per_week: 3.0
+      manual_hr_per_week: 58.5
+      auto_hr_per_week: 4.8
+      saved_hr_per_week: 53.7
+    - mow_freq_per_week: 4.0
+      manual_hr_per_week: 77.9
+      auto_hr_per_week: 6.3
+      saved_hr_per_week: 71.6
+    - mow_freq_per_week: 5.0
+      manual_hr_per_week: 97.4
+      auto_hr_per_week: 7.9
+      saved_hr_per_week: 89.5
+  normalized:
+    acres: 31.9
+    auto_sessions: 2
+    manual_unit_sessions: 4
+    auto_min: 95
+    manual_min: 1107
+    saved_min: 1012
+    auto_hr: 1.6
+    manual_hr: 18.4
+    saved_hr: 16.9
+    reduction_pct: 91.4
+    weekly:
+    - mow_freq_per_week: 2.0
+      manual_hr_per_week: 36.9
+      auto_hr_per_week: 3.2
+      saved_hr_per_week: 33.7
+    - mow_freq_per_week: 3.0
+      manual_hr_per_week: 55.4
+      auto_hr_per_week: 4.8
+      saved_hr_per_week: 50.6
+    - mow_freq_per_week: 4.0
+      manual_hr_per_week: 73.8
+      auto_hr_per_week: 6.3
+      saved_hr_per_week: 67.5
+    - mow_freq_per_week: 5.0
+      manual_hr_per_week: 92.2
+      auto_hr_per_week: 7.9
+      saved_hr_per_week: 84.3
   fuel_gal: null
   fuel_gal_per_ac: null
   wage_usd_hr: 24.5
   wage_is_reported: false
-  value_saved_usd: 423
-  value_saved_usd_per_ac: 12.95
   redeployed_log: false
   redeployed_min: 0
   redeployed_tasks: []
@@ -65,25 +166,85 @@ sites:
   region: Desert Southwest
   turf: Overseeded warm-season
   sessions: 1
-  acres_observed: 9.8
-  acres_basis: estimated
-  manual_labor_min: 278
-  auto_labor_min: 58
-  labor_saved_min: 220
-  labor_saved_hr: 3.7
-  labor_reduction_pct: 79.1
-  manual_labor_min_per_ac: 28.4
-  auto_labor_min_per_ac: 5.9
-  auto_machine_min_per_ac: 19.8
-  manual_machine_min_per_ac: 20.2
-  auto_transit_min: 19
-  manual_transit_min: 15
+  holes_managed: 16
+  coefficients:
+    auto_fixed_min_per_session: 58.0
+    auto_shepherd_min_per_session: 0.0
+    manual_fixed_min_per_unit_session: 65.0
+    manual_variable_min_per_ac: 21.7
+  observed:
+    acres: 9.8
+    fairways: 6
+    acres_basis: estimated
+    manual_min: 278
+    auto_min: 58
+    saved_min: 220
+    saved_hr: 3.7
+    manual_min_per_ac: 28.4
+    auto_min_per_ac: 5.9
+    reduction_pct: 79.1
+  full_course:
+    acres: 26.1
+    scale_factor: 2.67
+    is_extrapolated: true
+    auto_sessions: 2
+    manual_unit_sessions: 3
+    auto_min: 116
+    manual_min: 762
+    saved_min: 646
+    auto_hr: 1.9
+    manual_hr: 12.7
+    saved_hr: 10.8
+    reduction_pct: 84.8
+    weekly:
+    - mow_freq_per_week: 2.0
+      manual_hr_per_week: 25.4
+      auto_hr_per_week: 3.9
+      saved_hr_per_week: 21.5
+    - mow_freq_per_week: 3.0
+      manual_hr_per_week: 38.1
+      auto_hr_per_week: 5.8
+      saved_hr_per_week: 32.3
+    - mow_freq_per_week: 4.0
+      manual_hr_per_week: 50.8
+      auto_hr_per_week: 7.7
+      saved_hr_per_week: 43.1
+    - mow_freq_per_week: 5.0
+      manual_hr_per_week: 63.5
+      auto_hr_per_week: 9.7
+      saved_hr_per_week: 53.8
+  normalized:
+    acres: 31.9
+    auto_sessions: 2
+    manual_unit_sessions: 3
+    auto_min: 116
+    manual_min: 887
+    saved_min: 771
+    auto_hr: 1.9
+    manual_hr: 14.8
+    saved_hr: 12.9
+    reduction_pct: 86.9
+    weekly:
+    - mow_freq_per_week: 2.0
+      manual_hr_per_week: 29.6
+      auto_hr_per_week: 3.9
+      saved_hr_per_week: 25.7
+    - mow_freq_per_week: 3.0
+      manual_hr_per_week: 44.4
+      auto_hr_per_week: 5.8
+      saved_hr_per_week: 38.5
+    - mow_freq_per_week: 4.0
+      manual_hr_per_week: 59.1
+      auto_hr_per_week: 7.7
+      saved_hr_per_week: 51.4
+    - mow_freq_per_week: 5.0
+      manual_hr_per_week: 73.9
+      auto_hr_per_week: 9.7
+      saved_hr_per_week: 64.2
   fuel_gal: 6.0
   fuel_gal_per_ac: 0.61
   wage_usd_hr: 24.5
   wage_is_reported: false
-  value_saved_usd: 90
-  value_saved_usd_per_ac: 9.17
   redeployed_log: true
   redeployed_min: 240
   redeployed_tasks:
@@ -100,25 +261,85 @@ sites:
   region: Mountain West
   turf: Cool-season
   sessions: 1
-  acres_observed: 9.2
-  acres_basis: estimated
-  manual_labor_min: 320
-  auto_labor_min: 38
-  labor_saved_min: 282
-  labor_saved_hr: 4.7
-  labor_reduction_pct: 88.1
-  manual_labor_min_per_ac: 34.8
-  auto_labor_min_per_ac: 4.1
-  auto_machine_min_per_ac: 19.9
-  manual_machine_min_per_ac: 24.7
-  auto_transit_min: 25
-  manual_transit_min: 31
+  holes_managed: 14
+  coefficients:
+    auto_fixed_min_per_session: 38.0
+    auto_shepherd_min_per_session: 0.0
+    manual_fixed_min_per_unit_session: 62.0
+    manual_variable_min_per_ac: 28.0
+  observed:
+    acres: 9.2
+    fairways: 6
+    acres_basis: estimated
+    manual_min: 320
+    auto_min: 38
+    saved_min: 282
+    saved_hr: 4.7
+    manual_min_per_ac: 34.8
+    auto_min_per_ac: 4.1
+    reduction_pct: 88.1
+  full_course:
+    acres: 21.5
+    scale_factor: 2.33
+    is_extrapolated: true
+    auto_sessions: 2
+    manual_unit_sessions: 3
+    auto_min: 76
+    manual_min: 787
+    saved_min: 711
+    auto_hr: 1.3
+    manual_hr: 13.1
+    saved_hr: 11.9
+    reduction_pct: 90.3
+    weekly:
+    - mow_freq_per_week: 2.0
+      manual_hr_per_week: 26.2
+      auto_hr_per_week: 2.5
+      saved_hr_per_week: 23.7
+    - mow_freq_per_week: 3.0
+      manual_hr_per_week: 39.4
+      auto_hr_per_week: 3.8
+      saved_hr_per_week: 35.5
+    - mow_freq_per_week: 4.0
+      manual_hr_per_week: 52.5
+      auto_hr_per_week: 5.1
+      saved_hr_per_week: 47.4
+    - mow_freq_per_week: 5.0
+      manual_hr_per_week: 65.6
+      auto_hr_per_week: 6.3
+      saved_hr_per_week: 59.2
+  normalized:
+    acres: 31.9
+    auto_sessions: 2
+    manual_unit_sessions: 4
+    auto_min: 76
+    manual_min: 1141
+    saved_min: 1065
+    auto_hr: 1.3
+    manual_hr: 19.0
+    saved_hr: 17.8
+    reduction_pct: 93.3
+    weekly:
+    - mow_freq_per_week: 2.0
+      manual_hr_per_week: 38.0
+      auto_hr_per_week: 2.5
+      saved_hr_per_week: 35.5
+    - mow_freq_per_week: 3.0
+      manual_hr_per_week: 57.0
+      auto_hr_per_week: 3.8
+      saved_hr_per_week: 53.2
+    - mow_freq_per_week: 4.0
+      manual_hr_per_week: 76.1
+      auto_hr_per_week: 5.1
+      saved_hr_per_week: 71.0
+    - mow_freq_per_week: 5.0
+      manual_hr_per_week: 95.1
+      auto_hr_per_week: 6.3
+      saved_hr_per_week: 88.8
   fuel_gal: 7.2
   fuel_gal_per_ac: 0.78
   wage_usd_hr: 30.09
   wage_is_reported: true
-  value_saved_usd: 141
-  value_saved_usd_per_ac: 15.37
   redeployed_log: true
   redeployed_min: 300
   redeployed_tasks:
@@ -144,13 +365,15 @@ redeployed_tasks:
 caveats:
 - Three sites and four sessions. Enough to show direction and magnitude, not enough for statistical inference.
   Treat every figure as preliminary.
+- No site reported its fairway mowing frequency. Weekly figures use a stated frequency that the reader
+  can change; frequency is now a required field for new sites.
+- Two of three sites observed only part of their course. Their full-course figures are extrapolated from
+  measured rates and assume unobserved fairways resemble observed ones.
 - Manual and autonomous runs were recorded on different days, not simultaneously.
 - Operators knew they were being timed. Observation bias would make manual mowing look faster than normal,
   which works against the autonomous case rather than for it.
 - Only one site measured fairway acreage. The other two are estimated from the pooled autonomous mowing
   rate.
-- Only one site reported a loaded wage. Dollar figures at other sites use a national default and are labelled
-  as such.
+- Only one site reported a loaded wage. Dollar figures elsewhere use a national default.
 - No site has reduced headcount or overtime. Labor savings are currently redeployed hours, not cash removed
   from a budget.
-- Two of three sites logged what the freed operator actually did. The third did not.
